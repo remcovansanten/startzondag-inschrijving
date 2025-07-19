@@ -1,93 +1,208 @@
-# Startzondag-inschrijving
+# Startzondag Vrijwilligers Inschrijving
 
+Een moderne web applicatie voor het beheren van vrijwilligersaanmeldingen voor eenmalige evenementen. Gebouwd met Next.js 14, TypeScript, en Tailwind CSS.
 
+## 🎯 Doel
 
-## Getting started
+Deze applicatie is ontworpen om het aanmeldproces voor vrijwilligers te stroomlijnen voor evenementen waar verschillende taken uitgevoerd moeten worden, elk met een beperkt aantal beschikbare plekken. Vrijwilligers kunnen zich eenvoudig aanmelden via een gebruiksvriendelijke interface, terwijl beheerders een volledig overzicht hebben van alle aanmeldingen.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## ✨ Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Voor Vrijwilligers
+- **Overzichtelijke takenpagina**: Bekijk alle beschikbare taken met realtime beschikbaarheid
+- **Eenvoudige aanmelding**: Meld je aan met naam, email, telefoon en optionele opmerkingen
+- **Wijzig of annuleer**: Pas je aanmelding aan of trek deze in via een unieke link
+- **Visuele voortgang**: Zie direct hoeveel plekken er nog beschikbaar zijn per taak
+- **Mobiel-vriendelijk**: Volledig responsive design voor alle apparaten
 
-## Add your files
+### Voor Beheerders
+- **Beveiligd admin panel**: Veilige login met sessie-beheer
+- **Dashboard overzicht**: Real-time statistieken van taken en aanmeldingen
+- **Taakbeheer**: Bekijk, bewerk en beheer alle taken en aanmeldingen
+- **Excel export**: Download alle aanmeldingen als Excel bestand
+- **Email integratie**: Automatische bevestigingsmails (wanneer geconfigureerd)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 🏗️ Technische Architectuur
 
+### Tech Stack
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Taal**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: SQLite met [Prisma ORM](https://www.prisma.io/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Authenticatie**: JWT-based sessie management
+- **Email**: [Resend](https://resend.com/) API (optioneel)
+
+### Project Structuur
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/remcovansanten/startzondag-inschrijving.git
-git branch -M main
-git push -uf origin main
+├── app/                    # Next.js App Router pagina's
+│   ├── api/               # API routes
+│   ├── admin/             # Admin dashboard pagina's
+│   ├── aanmelden/         # Aanmeld pagina's
+│   └── wijzig/            # Wijzig/annuleer pagina's
+├── components/            # Herbruikbare React componenten
+├── lib/                   # Utility functies en configuratie
+├── prisma/                # Database schema en migraties
+└── scripts/               # Helper scripts (bijv. seed)
 ```
 
-## Integrate with your tools
+## 🚀 Installatie
 
-- [ ] [Set up project integrations](https://gitlab.com/remcovansanten/startzondag-inschrijving/-/settings/integrations)
+### Vereisten
+- Node.js 18.17 of hoger
+- npm of yarn
 
-## Collaborate with your team
+### Stappen
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+1. **Clone de repository**
+```bash
+git clone https://gitlab.com/remcovansanten/startzondag-inschrijving.git
+cd startzondag-inschrijving
+```
 
-## Test and Deploy
+2. **Installeer dependencies**
+```bash
+npm install
+```
 
-Use the built-in continuous integration in GitLab.
+3. **Configureer environment variabelen**
+```bash
+cp .env.local.example .env.local
+```
+Bewerk `.env.local` met je eigen waarden (zie [Configuratie](#configuratie) hieronder).
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+4. **Setup de database**
+```bash
+npx prisma db push
+```
 
-***
+5. **Seed de database (optioneel)**
+```bash
+npm run seed
+```
 
-# Editing this README
+6. **Start de development server**
+```bash
+npm run dev
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+De applicatie is nu beschikbaar op http://localhost:3000
 
-## Suggestions for a good README
+## ⚙️ Configuratie
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### Environment Variabelen
 
-## Name
-Choose a self-explaining name for your project.
+Maak een `.env.local` bestand aan met de volgende variabelen:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```env
+# Database
+DATABASE_URL="file:./dev.db"
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+# Admin Credentials
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="change-this-password"
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+# Security
+JWT_SECRET="your-secret-key-min-32-chars-change-this-in-production"
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+# Email Service (optioneel)
+RESEND_API_KEY="re_your_api_key_here"
+EMAIL_FROM="noreply@yourdomain.nl"
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+# Site URL
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Email Configuratie
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+De applicatie werkt zonder email configuratie, maar voor volledige functionaliteit:
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+1. **Resend (aanbevolen)**
+   - Maak een account aan op [resend.com](https://resend.com)
+   - Kopieer je API key naar `.env.local`
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+2. **Gmail SMTP (alternatief)**
+   - Installeer `npm install nodemailer @types/nodemailer`
+   - Gebruik de `email-gmail.ts` implementatie
+   - Configureer Gmail app password
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## 📱 Gebruik
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### Voor Vrijwilligers
+1. Ga naar de homepage
+2. Bekijk beschikbare taken
+3. Klik op "Aanmelden" bij de gewenste taak
+4. Vul het aanmeldformulier in
+5. Ontvang bevestiging (en email indien geconfigureerd)
+6. Gebruik de unieke link om aanmelding te wijzigen/annuleren
 
-## License
-For open source projects, say how it is licensed.
+### Voor Beheerders
+1. Ga naar `/admin/login`
+2. Log in met de geconfigureerde credentials
+3. Beheer taken en aanmeldingen via het dashboard
+4. Export data naar Excel voor externe verwerking
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## 🔒 Beveiliging
+
+- Wachtwoorden worden gehashed met bcrypt
+- JWT tokens voor sessie management
+- Unieke tokens voor aanmelding wijzigingen
+- Input validatie en sanitization
+- Beschermde admin routes via middleware
+
+## 📝 Database Schema
+
+De applicatie gebruikt drie hoofdtabellen:
+- **Taak**: Vrijwilligerstaken met max aantal plekken
+- **Aanmelding**: Registraties van vrijwilligers
+- **Admin**: Beheerder accounts
+
+Zie `prisma/schema.prisma` voor het complete schema.
+
+## 🚢 Deployment
+
+### Vercel (aanbevolen)
+1. Push naar GitHub/GitLab
+2. Importeer in Vercel
+3. Configureer environment variabelen
+4. Deploy
+
+### Andere platforms
+De applicatie kan gedeployed worden op elk platform dat Node.js ondersteunt:
+- Railway
+- Heroku
+- DigitalOcean App Platform
+- Self-hosted met PM2
+
+## 🛠️ Development
+
+### Beschikbare Scripts
+```bash
+npm run dev      # Start development server
+npm run build    # Build voor productie
+npm run start    # Start productie server
+npm run lint     # Run linter
+npm run seed     # Seed database met test data
+```
+
+### Database Wijzigingen
+```bash
+npx prisma db push        # Update database schema
+npx prisma studio         # Open database GUI
+npx prisma generate       # Genereer Prisma Client
+```
+
+## 🤝 Contributing
+
+Contributions zijn welkom! Voor grote wijzigingen, open eerst een issue om te bespreken wat je wilt veranderen.
+
+## 📄 Licentie
+
+Dit project is gelicenseerd onder de MIT License.
+
+## 👥 Contact
+
+Voor vragen of ondersteuning, neem contact op via de GitLab issues.
+
+---
+
+Ontwikkeld met ❤️ voor Startzondag
