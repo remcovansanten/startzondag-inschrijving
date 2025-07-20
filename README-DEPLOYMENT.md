@@ -1,5 +1,16 @@
 # Deployment Guide for Vercel
 
+## ⚠️ CRITICAL: Set DATABASE_URL Environment Variable
+
+When Vercel creates a Postgres database, it creates `POSTGRES_PRISMA_URL` but NOT `DATABASE_URL`.
+**You MUST manually add DATABASE_URL**:
+
+1. Go to Vercel Dashboard → Settings → Environment Variables
+2. Copy the value from `POSTGRES_PRISMA_URL`
+3. Create new variable: `DATABASE_URL` with the copied value
+
+Without this, your build will fail with "Environment variable not found: DATABASE_URL"
+
 ## Important: Database Considerations
 
 SQLite works great for local development, but **won't work properly on Vercel** or other serverless platforms because:

@@ -20,9 +20,17 @@ Vercel will automatically add these environment variables:
 
 In your Vercel project settings, add these additional variables:
 
+**IMPORTANT**: For DATABASE_URL, you need to COPY the value from POSTGRES_PRISMA_URL
+
+1. Go to Settings → Environment Variables
+2. Find `POSTGRES_PRISMA_URL` and copy its value
+3. Create a new variable:
+   - Key: `DATABASE_URL`
+   - Value: Paste the copied value from POSTGRES_PRISMA_URL
+   
 ```env
-# Use the Prisma-specific URL that Vercel provides
-DATABASE_URL="${POSTGRES_PRISMA_URL}"
+# Copy the actual value from POSTGRES_PRISMA_URL, don't use ${} syntax
+DATABASE_URL="postgres://username:password@host:5432/database?sslmode=require"
 
 # Admin credentials
 ADMIN_USERNAME="admin"
