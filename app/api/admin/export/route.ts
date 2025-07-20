@@ -49,22 +49,98 @@ export async function GET() {
       XLSX.utils.book_append_sheet(wb, allSheet, 'Alle Aanmeldingen');
     }
 
-    // Sheet per task
+    // Contact list sheet - simplified view for easy contact
+    const contactList = taken.flatMap(taak => 
+      taak.aanmeldingen.map(aanmelding => ({
+        'Taak': taak.naam,
+        'Naam': aanmelding.naam,
+        'Email': aanmelding.email,
+        'Telefoon': aanmelding.telefoon
+      }))
+    );
+    
+    if (contactList.length > 0) {
+      const contactSheet = XLSX.utils.json_to_sheet(contactList);
+      contactSheet['!cols'] = [
+        { wch: 30 }, // Taak
+        { wch: 25 }, // Naam
+        { wch: 30 }, // Email
+        { wch: 15 }  // Telefoon
+      ];
+      XLSX.utils.book_append_sheet(wb, contactSheet, 'Contactlijst');
+    }
+
+    // Sheet per task with enhanced information
     taken.forEach(taak => {
+      const taskData = [];
+      
+      // Add task header information
+      taskData.push({
+        'Naam': `TAAK: ${taak.naam}`,
+        'Email': '',
+        'Telefoon': '',
+        'Opmerking': taak.beschrijving || '',
+        'Aangemeld op': ''
+      });
+      
+      taskData.push({
+        'Naam': `Categorie: ${taak.categorie || 'Geen'}`,
+        'Email': '',
+        'Telefoon': '',
+        'Opmerking': `${taak.aanmeldingen.length} van ${taak.maxAantal} plekken bezet`,
+        'Aangemeld op': ''
+      });
+      
+      // Add empty row
+      taskData.push({
+        'Naam': '',
+        'Email': '',
+        'Telefoon': '',
+        'Opmerking': '',
+        'Aangemeld op': ''
+      });
+      
+      // Add volunteer data
       if (taak.aanmeldingen.length > 0) {
-        const taskData = taak.aanmeldingen.map(aanmelding => ({
-          'Naam': aanmelding.naam,
-          'Email': aanmelding.email,
-          'Telefoon': aanmelding.telefoon,
-          'Opmerking': aanmelding.opmerking || '',
-          'Aangemeld op': new Date(aanmelding.createdAt).toLocaleDateString('nl-NL')
-        }));
-        
-        const taskSheet = XLSX.utils.json_to_sheet(taskData);
-        // Limit sheet name to 31 characters (Excel limitation)
-        const sheetName = taak.naam.substring(0, 31);
-        XLSX.utils.book_append_sheet(wb, taskSheet, sheetName);
+        taak.aanmeldingen.forEach((aanmelding, index) => {
+          taskData.push({
+            'Naam': aanmelding.naam,
+            'Email': aanmelding.email,
+            'Telefoon': aanmelding.telefoon,
+            'Opmerking': aanmelding.opmerking || '',
+            'Aangemeld op': new Date(aanmelding.createdAt).toLocaleDateString('nl-NL', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          });
+        });
+      } else {
+        taskData.push({
+          'Naam': 'Nog geen aanmeldingen',
+          'Email': '',
+          'Telefoon': '',
+          'Opmerking': '',
+          'Aangemeld op': ''
+        });
       }
+      
+      const taskSheet = XLSX.utils.json_to_sheet(taskData);
+      
+      // Set column widths for better readability
+      taskSheet['!cols'] = [
+        { wch: 25 }, // Naam
+        { wch: 30 }, // Email
+        { wch: 15 }, // Telefoon
+        { wch: 40 }, // Opmerking
+        { wch: 20 }  // Aangemeld op
+      ];
+      
+      // Limit sheet name to 31 characters (Excel limitation)
+      const sheetName = taak.naam.substring(0, 31);
+      XLSX.utils.book_append_sheet(wb, taskSheet, sheetName);
     });
 
     // Generate buffer
