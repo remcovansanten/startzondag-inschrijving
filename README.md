@@ -27,10 +27,11 @@ Deze applicatie is ontworpen om het aanmeldproces voor vrijwilligers te stroomli
 ### Tech Stack
 - **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
 - **Taal**: [TypeScript](https://www.typescriptlang.org/)
-- **Database**: SQLite met [Prisma ORM](https://www.prisma.io/)
+- **Database**: PostgreSQL met [Prisma ORM](https://www.prisma.io/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Authenticatie**: JWT-based sessie management
 - **Email**: [Resend](https://resend.com/) API (optioneel)
+- **Hosting**: Geoptimaliseerd voor [Vercel](https://vercel.com/)
 
 ### Project Structuur
 ```

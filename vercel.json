@@ -3,5 +3,6 @@
     "app/api/*/route.ts": {
       "maxDuration": 10
     }
-  }
+  },
+  "framework": "nextjs"
 }
