@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db';
 import { clearSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 async function getStats() {
   const [takenCount, aanmeldingenCount, taken] = await Promise.all([
     prisma.taak.count(),

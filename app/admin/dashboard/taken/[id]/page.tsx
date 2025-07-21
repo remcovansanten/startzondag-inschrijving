@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import DeleteButton from './DeleteButton';
 
+export const dynamic = 'force-dynamic';
+
 async function getTaakWithAanmeldingen(id: string) {
   const taak = await prisma.taak.findUnique({
     where: { id },
