@@ -23,19 +23,19 @@ export default function TaakCard({ taak }: TaakCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
       {taak.categorie && (
-        <div className="text-sm text-primary font-semibold mb-2">{taak.categorie}</div>
+        <div className="text-sm text-primary font-semibold mb-2" role="heading" aria-level="4">{taak.categorie}</div>
       )}
       
       <h3 className="text-xl font-semibold mb-2 text-text-dark">{taak.naam}</h3>
       
       {taak.beschrijving && (
-        <p className="text-gray-600 mb-4 text-sm">{taak.beschrijving}</p>
+        <p className="text-text-muted mb-4 text-sm">{taak.beschrijving}</p>
       )}
       
       <div className="mb-4">
         <div className="flex justify-between text-sm mb-1">
-          <span className="text-gray-700">{aantalBezet} van {taak.maxAantal} plekken bezet</span>
-          <span className="text-gray-700">{Math.round(percentage)}%</span>
+          <span className="text-text-dark">{aantalBezet} van {taak.maxAantal} plekken bezet</span>
+          <span className="text-text-dark">{Math.round(percentage)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
@@ -51,7 +51,7 @@ export default function TaakCard({ taak }: TaakCardProps) {
         href={isVol ? '#' : `/aanmelden/${taak.id}`}
         className={`block w-full text-center py-2 px-4 rounded font-medium transition-colors ${
           isVol
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? 'bg-gray-300 text-text-muted cursor-not-allowed'
             : 'bg-primary text-white hover:bg-primary-hover'
         }`}
         onClick={isVol ? (e) => e.preventDefault() : undefined}

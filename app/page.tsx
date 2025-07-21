@@ -40,8 +40,8 @@ export default async function Home() {
           <div className="flex items-center justify-center space-x-4">
             <img src="/logo-gke.png" alt="Gereformeerde Kerk Ermelo" className="h-16 w-auto" />
             <div className="text-center">
-              <h1 className="text-2xl font-semibold text-primary">Gereformeerde Kerk Ermelo</h1>
-              <p className="text-sm text-gray-600">Startzondag 2025</p>
+              <h1 className="text-2xl font-semibold text-text-dark">Gereformeerde Kerk Ermelo</h1>
+              <p className="text-sm text-text-muted">Startzondag 2025</p>
             </div>
           </div>
         </div>
@@ -49,15 +49,15 @@ export default async function Home() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">Vrijwilligers gezocht!</h2>
-          <p className="text-lg text-gray-700">
+          <h2 className="text-3xl font-bold mb-2 text-text-dark">Vrijwilligers gezocht!</h2>
+          <p className="text-lg text-text-muted">
             Help mee om de Startzondag tot een succes te maken
           </p>
         </div>
 
         {Object.entries(takenByCategory).map(([category, categoryTaken]) => (
           <div key={category} className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">{category}</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-text-dark">{category}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categoryTaken.map((taak) => (
                 <TaakCard key={taak.id} taak={taak} />
@@ -68,13 +68,13 @@ export default async function Home() {
 
         {taken.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Er zijn momenteel geen taken beschikbaar.</p>
+            <p className="text-text-muted">Er zijn momenteel geen taken beschikbaar.</p>
           </div>
         )}
       </div>
 
-      <footer className="bg-gray-100 mt-16">
-        <div className="container mx-auto px-4 py-4 text-center text-sm text-gray-600">
+      <footer className="bg-secondary mt-16">
+        <div className="container mx-auto px-4 py-4 text-center text-sm text-text-muted">
           <Link href="/admin/login" className="hover:underline">
             Admin
           </Link>

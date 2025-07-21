@@ -61,7 +61,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="naam" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="naam" className="block text-sm font-medium text-text-dark mb-1">
           Naam *
         </label>
         <input
@@ -76,7 +76,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="email" className="block text-sm font-medium text-text-dark mb-1">
           Email *
         </label>
         <input
@@ -91,7 +91,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       </div>
 
       <div>
-        <label htmlFor="telefoon" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="telefoon" className="block text-sm font-medium text-text-dark mb-1">
           Telefoon *
         </label>
         <input
@@ -106,7 +106,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       </div>
 
       <div>
-        <label htmlFor="opmerking" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="opmerking" className="block text-sm font-medium text-text-dark mb-1">
           Opmerking (optioneel)
         </label>
         <textarea
@@ -120,7 +120,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div className="bg-danger-bg border border-red-200 text-danger px-4 py-3 rounded" role="alert">
           {error}
         </div>
       )}

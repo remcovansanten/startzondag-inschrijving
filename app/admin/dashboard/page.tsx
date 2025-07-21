@@ -44,11 +44,11 @@ export default async function AdminDashboard() {
   const stats = await getStats();
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-bg-light">
       <div className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+            <h1 className="text-2xl font-bold text-text-dark">Admin Dashboard</h1>
             <form action={handleLogout}>
               <button
                 type="submit"
@@ -64,30 +64,30 @@ export default async function AdminDashboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Totaal Taken</h3>
-            <p className="text-3xl font-bold text-primary">{stats.takenCount}</p>
+            <h3 className="text-sm font-medium text-text-muted mb-2">Totaal Taken</h3>
+            <p className="text-3xl font-bold text-text-dark">{stats.takenCount}</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Totaal Aanmeldingen</h3>
-            <p className="text-3xl font-bold text-success">{stats.aanmeldingenCount}</p>
+            <h3 className="text-sm font-medium text-text-muted mb-2">Totaal Aanmeldingen</h3>
+            <p className="text-3xl font-bold text-text-dark">{stats.aanmeldingenCount}</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Volle Taken</h3>
-            <p className="text-3xl font-bold text-danger">{stats.volletaken.length}</p>
+            <h3 className="text-sm font-medium text-text-muted mb-2">Volle Taken</h3>
+            <p className="text-3xl font-bold text-text-dark">{stats.volletaken.length}</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Bijna Vol</h3>
-            <p className="text-3xl font-bold text-warning">{stats.bijnaVolletaken.length}</p>
+            <h3 className="text-sm font-medium text-text-muted mb-2">Bijna Vol</h3>
+            <p className="text-3xl font-bold text-text-dark">{stats.bijnaVolletaken.length}</p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Taken Overzicht</h2>
+              <h2 className="text-xl font-semibold text-text-dark">Taken Overzicht</h2>
               <div className="space-x-2">
                 <Link
                   href="/admin/dashboard/taken/nieuw"
@@ -142,7 +142,7 @@ export default async function AdminDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap font-medium">
                         {taak.naam}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                         {taak.categorie || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -163,10 +163,10 @@ export default async function AdminDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           isVol 
-                            ? 'bg-red-100 text-red-800' 
+                            ? 'bg-danger-bg text-danger' 
                             : percentage > 75 
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-green-100 text-green-800'
+                            ? 'bg-warning-bg text-warning'
+                            : 'bg-success-bg text-success'
                         }`}>
                           {isVol ? 'Vol' : percentage > 75 ? 'Bijna vol' : 'Open'}
                         </span>
@@ -174,13 +174,13 @@ export default async function AdminDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <Link
                           href={`/admin/dashboard/taken/${taak.id}`}
-                          className="text-primary hover:underline mr-3"
+                          className="text-primary hover:text-primary-hover hover:underline mr-3 font-medium"
                         >
                           Bekijk
                         </Link>
                         <Link
                           href={`/admin/dashboard/taken/${taak.id}/edit`}
-                          className="text-secondary hover:underline"
+                          className="text-primary hover:text-primary-hover hover:underline font-medium"
                         >
                           Bewerk
                         </Link>
@@ -192,7 +192,7 @@ export default async function AdminDashboard() {
             </table>
             
             {stats.taken.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-text-muted">
                 Nog geen taken aangemaakt
               </div>
             )}

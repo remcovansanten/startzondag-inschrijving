@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* Larger default font size for better readability for elderly users */
+  html {
+    font-size: 18px; /* Increased from default 16px */
+  }
+  
+  /* Ensure good text contrast */
+  body {
+    @apply text-text-dark;
+  }
+  
+  /* Focus styles for keyboard navigation */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+  
+  /* Ensure links are distinguishable */
+  a:not(.no-underline) {
+    @apply underline;
+  }
+  
+  a:hover {
+    @apply no-underline;
+  }
+  
+  /* Button focus styles */
+  button:focus-visible {
+    @apply ring-offset-2;
+  }
+}
+
+@layer components {
+  /* Larger touch targets for elderly users */
+  .btn-primary {
+    @apply bg-primary text-white py-3 px-6 rounded hover:bg-primary-hover 
+           disabled:opacity-50 disabled:cursor-not-allowed transition-colors 
+           font-medium text-base min-h-[48px];
+  }
+  
+  /* Improved form inputs */
+  .form-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-md 
+           focus:outline-none focus:ring-2 focus:ring-primary text-base
+           min-h-[48px];
+  }
+}

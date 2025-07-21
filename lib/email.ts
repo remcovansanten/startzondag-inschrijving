@@ -17,37 +17,37 @@ export async function sendConfirmationEmail(to: string, data: {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #e94b35; color: white; padding: 20px; text-align: center;">
+            <div style="background-color: #c73e2b; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
               <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
             </div>
             
             <div style="padding: 30px;">
-              <h2 style="color: #333333; margin-top: 0;">Beste ${data.naam},</h2>
+              <h2 style="color: #1f2937; margin-top: 0;">Beste ${data.naam},</h2>
               
-              <p style="color: #666666; line-height: 1.6;">
+              <p style="color: #4b5563; line-height: 1.6;">
                 Bedankt voor je aanmelding als vrijwilliger voor de Startzondag!
                 Je hebt je aangemeld voor: <strong>${data.taakNaam}</strong>
               </p>
               
               <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
-                <h3 style="color: #333333; margin-top: 0;">Je gegevens:</h3>
+                <h3 style="color: #1f2937; margin-top: 0;">Je gegevens:</h3>
                 <p style="margin: 5px 0;"><strong>Naam:</strong> ${data.naam}</p>
                 <p style="margin: 5px 0;"><strong>Email:</strong> ${data.email}</p>
                 <p style="margin: 5px 0;"><strong>Telefoon:</strong> ${data.telefoon}</p>
               </div>
               
-              <p style="color: #666666; line-height: 1.6;">
+              <p style="color: #4b5563; line-height: 1.6;">
                 Mocht je je aanmelding willen wijzigen of annuleren, dan kan dat via onderstaande link:
               </p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${data.wijzigLink}" style="background-color: #e94b35; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                <a href="${data.wijzigLink}" style="background-color: #c73e2b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                   Aanmelding beheren
                 </a>
               </div>
               
-              <p style="color: #999999; font-size: 12px; margin-top: 30px;">
+              <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
                 Of kopieer deze link: ${data.wijzigLink}
               </p>
               
@@ -83,19 +83,19 @@ export async function sendCancellationEmail(to: string, data: {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #e94b35; color: white; padding: 20px; text-align: center;">
+            <div style="background-color: #c73e2b; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
               <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
             </div>
             
             <div style="padding: 30px;">
-              <h2 style="color: #333333; margin-top: 0;">Beste ${data.naam},</h2>
+              <h2 style="color: #1f2937; margin-top: 0;">Beste ${data.naam},</h2>
               
-              <p style="color: #666666; line-height: 1.6;">
+              <p style="color: #4b5563; line-height: 1.6;">
                 Je aanmelding voor <strong>"${data.taakNaam}"</strong> is succesvol geannuleerd.
               </p>
               
-              <p style="color: #666666; line-height: 1.6;">
+              <p style="color: #4b5563; line-height: 1.6;">
                 Mocht je je toch weer willen aanmelden, dan kan dat via de website.
               </p>
               
