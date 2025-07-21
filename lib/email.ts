@@ -2,6 +2,24 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+async function sendEmailWithRetry(emailData: any, maxRetries = 3): Promise<any> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await resend.emails.send(emailData);
+      return result;
+    } catch (error: any) {
+      console.error(`Email send attempt ${attempt} failed:`, error);
+      
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // Wait before retry (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+}
+
 export async function sendConfirmationEmail(to: string, data: {
   naam: string;
   taakNaam: string;
@@ -10,7 +28,7 @@ export async function sendConfirmationEmail(to: string, data: {
   wijzigLink: string;
 }) {
   try {
-    const result = await resend.emails.send({
+    const emailData = {
       from: process.env.EMAIL_FROM || 'noreply@example.com',
       to,
       subject: `Bevestiging aanmelding Startzondag - ${data.taakNaam}`,
@@ -62,7 +80,9 @@ export async function sendConfirmationEmail(to: string, data: {
           </div>
         </div>
       `,
-    });
+    };
+    
+    const result = await sendEmailWithRetry(emailData);
     console.log('Email sent successfully:', result);
     return result;
   } catch (error) {
@@ -76,7 +96,7 @@ export async function sendCancellationEmail(to: string, data: {
   taakNaam: string;
 }) {
   try {
-    await resend.emails.send({
+    const emailData = {
       from: process.env.EMAIL_FROM || 'noreply@example.com',
       to,
       subject: `Annulering bevestigd - ${data.taakNaam}`,
@@ -110,10 +130,13 @@ export async function sendCancellationEmail(to: string, data: {
           </div>
         </div>
       `,
-    });
-    return true;
+    };
+    
+    const result = await sendEmailWithRetry(emailData);
+    console.log('Cancellation email sent successfully:', result);
+    return result;
   } catch (error) {
-    console.error('Email send error:', error);
-    return false;
+    console.error('Cancellation email error:', error);
+    throw error;
   }
 }

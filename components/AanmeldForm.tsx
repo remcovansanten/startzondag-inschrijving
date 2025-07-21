@@ -99,6 +99,9 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
           id="telefoon"
           name="telefoon"
           required
+          placeholder="06-12345678"
+          pattern="^(06[\s-]?\d{8}|0[1-578][0-9][\s-]?\d{7})$"
+          title="Voer een geldig Nederlands telefoonnummer in"
           value={formData.telefoon}
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
