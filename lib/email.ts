@@ -10,32 +10,64 @@ export async function sendConfirmationEmail(to: string, data: {
   wijzigLink: string;
 }) {
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'noreply@example.com',
       to,
-      subject: `Bevestiging aanmelding - ${data.taakNaam}`,
+      subject: `Bevestiging aanmelding Startzondag - ${data.taakNaam}`,
       html: `
-        <h2>Beste ${data.naam},</h2>
-        
-        <p>Bedankt voor je aanmelding voor "${data.taakNaam}".</p>
-        
-        <h3>Je gegevens:</h3>
-        <ul>
-          <li><strong>Naam:</strong> ${data.naam}</li>
-          <li><strong>Email:</strong> ${data.email}</li>
-          <li><strong>Telefoon:</strong> ${data.telefoon}</li>
-        </ul>
-        
-        <p>Om je aanmelding te wijzigen of annuleren, gebruik deze link:</p>
-        <p><a href="${data.wijzigLink}">${data.wijzigLink}</a></p>
-        
-        <p>Met vriendelijke groet,<br>Het organisatieteam</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #e94b35; color: white; padding: 20px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
+              <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
+            </div>
+            
+            <div style="padding: 30px;">
+              <h2 style="color: #333333; margin-top: 0;">Beste ${data.naam},</h2>
+              
+              <p style="color: #666666; line-height: 1.6;">
+                Bedankt voor je aanmelding als vrijwilliger voor de Startzondag!
+                Je hebt je aangemeld voor: <strong>${data.taakNaam}</strong>
+              </p>
+              
+              <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                <h3 style="color: #333333; margin-top: 0;">Je gegevens:</h3>
+                <p style="margin: 5px 0;"><strong>Naam:</strong> ${data.naam}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> ${data.email}</p>
+                <p style="margin: 5px 0;"><strong>Telefoon:</strong> ${data.telefoon}</p>
+              </div>
+              
+              <p style="color: #666666; line-height: 1.6;">
+                Mocht je je aanmelding willen wijzigen of annuleren, dan kan dat via onderstaande link:
+              </p>
+              
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${data.wijzigLink}" style="background-color: #e94b35; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                  Aanmelding beheren
+                </a>
+              </div>
+              
+              <p style="color: #999999; font-size: 12px; margin-top: 30px;">
+                Of kopieer deze link: ${data.wijzigLink}
+              </p>
+              
+              <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
+              
+              <p style="color: #666666; line-height: 1.6; margin-bottom: 0;">
+                Met vriendelijke groet,<br>
+                <strong>Startzondag commissie</strong><br>
+                Gereformeerde Kerk Ermelo
+              </p>
+            </div>
+          </div>
+        </div>
       `,
     });
-    return true;
+    console.log('Email sent successfully:', result);
+    return result;
   } catch (error) {
     console.error('Email send error:', error);
-    return false;
+    throw error;
   }
 }
 
@@ -49,11 +81,34 @@ export async function sendCancellationEmail(to: string, data: {
       to,
       subject: `Annulering bevestigd - ${data.taakNaam}`,
       html: `
-        <h2>Beste ${data.naam},</h2>
-        
-        <p>Je aanmelding voor "${data.taakNaam}" is succesvol geannuleerd.</p>
-        
-        <p>Met vriendelijke groet,<br>Het organisatieteam</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #e94b35; color: white; padding: 20px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
+              <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
+            </div>
+            
+            <div style="padding: 30px;">
+              <h2 style="color: #333333; margin-top: 0;">Beste ${data.naam},</h2>
+              
+              <p style="color: #666666; line-height: 1.6;">
+                Je aanmelding voor <strong>"${data.taakNaam}"</strong> is succesvol geannuleerd.
+              </p>
+              
+              <p style="color: #666666; line-height: 1.6;">
+                Mocht je je toch weer willen aanmelden, dan kan dat via de website.
+              </p>
+              
+              <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
+              
+              <p style="color: #666666; line-height: 1.6; margin-bottom: 0;">
+                Met vriendelijke groet,<br>
+                <strong>Startzondag commissie</strong><br>
+                Gereformeerde Kerk Ermelo
+              </p>
+            </div>
+          </div>
+        </div>
       `,
     });
     return true;

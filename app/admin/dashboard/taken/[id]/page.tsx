@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
+import DeleteButton from './DeleteButton';
 
 async function getTaakWithAanmeldingen(id: string) {
   const taak = await prisma.taak.findUnique({
@@ -41,7 +42,18 @@ export default async function TaakDetailPage({ params }: { params: Promise<{ id:
 
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Taak Details</h2>
+          <div className="flex justify-between items-start mb-4">
+            <h2 className="text-lg font-semibold">Taak Details</h2>
+            <div className="flex gap-2">
+              <Link
+                href={`/admin/dashboard/taken/${taak.id}/edit`}
+                className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover transition-colors font-medium text-sm"
+              >
+                Bewerken
+              </Link>
+              <DeleteButton taakId={taak.id} taakNaam={taak.naam} aanmeldingenCount={taak.aanmeldingen.length} />
+            </div>
+          </div>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <dt className="text-sm font-medium text-gray-500">Naam</dt>

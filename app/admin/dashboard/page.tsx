@@ -89,19 +89,19 @@ export default async function AdminDashboard() {
               <div className="space-x-2">
                 <Link
                   href="/admin/dashboard/taken/nieuw"
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                  className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover transition-colors"
                 >
                   Nieuwe Taak
                 </Link>
                 <Link
                   href="/admin/dashboard/upload"
-                  className="bg-secondary text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+                  className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors"
                 >
                   Excel Upload
                 </Link>
                 <Link
                   href="/admin/dashboard/export"
-                  className="bg-success text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
+                  className="bg-success text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
                 >
                   Export
                 </Link>

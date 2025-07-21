@@ -97,12 +97,11 @@ export async function DELETE(
       where: { token }
     });
 
-    // Send cancellation email (disabled for now - no valid API key)
-    // TODO: Enable when email service is configured
-    // await sendCancellationEmail(aanmelding.email, {
-    //   naam: aanmelding.naam,
-    //   taakNaam: aanmelding.taak.naam,
-    // });
+    // Send cancellation email
+    await sendCancellationEmail(aanmelding.email, {
+      naam: aanmelding.naam,
+      taakNaam: aanmelding.taak.naam,
+    });
 
     return NextResponse.json({
       success: true,

@@ -56,20 +56,37 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Send confirmation email (disabled for now - no valid API key)
+    // Send confirmation email
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const wijzigLink = `${siteUrl}/wijzig/${token}`;
 
-    // TODO: Enable when email service is configured
-    // await sendConfirmationEmail(email, {
-    //   naam,
-    //   taakNaam: taak.naam,
-    //   telefoon,
-    //   email,
-    //   wijzigLink,
-    // });
-    
-    console.log('Wijzig link:', wijzigLink);
+    try {
+      console.log('Preparing to send email:', {
+        to: email,
+        taakNaam: taak.naam,
+        hasApiKey: !!process.env.RESEND_API_KEY,
+        apiKeyStart: process.env.RESEND_API_KEY?.substring(0, 10),
+        emailFrom: process.env.EMAIL_FROM,
+        siteUrl,
+      });
+
+      const emailResult = await sendConfirmationEmail(email, {
+        naam,
+        taakNaam: taak.naam,
+        telefoon,
+        email,
+        wijzigLink,
+      });
+      
+      console.log('Email sent successfully:', emailResult);
+    } catch (emailError: any) {
+      console.error('Email send error:', {
+        message: emailError.message,
+        stack: emailError.stack,
+        error: emailError,
+      });
+      // Don't fail the registration if email fails
+    }
 
     return NextResponse.json({
       success: true,
