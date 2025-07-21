@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient({
   datasources: {
@@ -10,22 +9,8 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  // Create admin user
-  const adminPassword = process.env.ADMIN_PASSWORD || 'usYfk*nJy3zfDiW__WU-';
-  const hashedPassword = await bcrypt.hash(adminPassword, 10);
-
-  await prisma.admin.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: {
-      username: 'admin',
-      passwordHash: hashedPassword,
-    },
-  });
-
-  console.log('Admin user created/updated');
-
-  // Create some sample tasks
+  console.log('Creating sample tasks for production...');
+  
   const sampleTasks = [
     {
       naam: 'Opbouw tent',
@@ -59,27 +44,25 @@ async function main() {
     },
   ];
 
-  // Check if tasks already exist
-  const existingTasks = await prisma.taak.count();
-  
-  if (existingTasks === 0) {
-    console.log('No tasks found, creating sample tasks...');
-    
-    for (const task of sampleTasks) {
+  let created = 0;
+  for (const task of sampleTasks) {
+    try {
       await prisma.taak.create({
         data: task,
       });
+      created++;
+      console.log(`Created task: ${task.naam}`);
+    } catch (error) {
+      console.log(`Skipped task: ${task.naam} (might already exist)`);
     }
-    
-    console.log(`${sampleTasks.length} sample tasks created`);
-  } else {
-    console.log(`${existingTasks} tasks already exist, skipping task creation`);
   }
+
+  console.log(`Created ${created} new tasks`);
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Error:', e);
     process.exit(1);
   })
   .finally(async () => {
