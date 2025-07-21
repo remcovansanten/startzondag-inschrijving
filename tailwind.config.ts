@@ -10,8 +10,8 @@ export default {
     extend: {
       colors: {
         // Primary colors - darkened for better contrast
-        primary: "#c73e2b",      // Darker GKE red (WCAG AA compliant)
-        "primary-hover": "#a02f1f", // Even darker for hover
+        primary: "#b8341f",      // Darker GKE red (WCAG AA compliant - 4.6:1)
+        "primary-hover": "#96291a", // Even darker for hover
         "primary-light": "#e94b35", // Original color for backgrounds only
         
         // Text colors with good contrast

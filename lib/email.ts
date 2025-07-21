@@ -17,7 +17,7 @@ export async function sendConfirmationEmail(to: string, data: {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #c73e2b; color: white; padding: 20px; text-align: center;">
+            <div style="background-color: #b8341f; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
               <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
             </div>
@@ -42,7 +42,7 @@ export async function sendConfirmationEmail(to: string, data: {
               </p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${data.wijzigLink}" style="background-color: #c73e2b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                <a href="${data.wijzigLink}" style="background-color: #b8341f; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                   Aanmelding beheren
                 </a>
               </div>
@@ -83,7 +83,7 @@ export async function sendCancellationEmail(to: string, data: {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #c73e2b; color: white; padding: 20px; text-align: center;">
+            <div style="background-color: #b8341f; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
               <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
             </div>
