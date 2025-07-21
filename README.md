@@ -3,7 +3,7 @@
 Een moderne, toegankelijke web applicatie voor het organiseren van vrijwilligers tijdens de Startzondag van de Gereformeerde Kerk Ermelo.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-yellow.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-15.4-black.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
 
@@ -203,7 +203,19 @@ Contributions zijn welkom! Voor grote wijzigingen, open eerst een issue om te be
 
 ## 📄 Licentie
 
-Dit project is gelicenseerd onder de MIT License.
+Dit project is gelicenseerd onder de Creative Commons BY-NC-SA 4.0 License.
+
+Dit betekent dat je vrij bent om:
+- ✅ De software te gebruiken voor non-profit doeleinden
+- ✅ De code aan te passen en te verbeteren
+- ✅ Het te delen met anderen
+
+Onder de voorwaarden dat:
+- ❌ Je het NIET mag gebruiken voor commerciële doeleinden
+- 📝 Je moet de originele makers vermelden
+- 🔄 Aanpassingen moeten onder dezelfde licentie gedeeld worden
+
+Zie [LICENSE](LICENSE) voor details.
 
 ## 👥 Contact
 
