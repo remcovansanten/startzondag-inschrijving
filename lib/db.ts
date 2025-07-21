@@ -12,7 +12,7 @@ const prismaClientSingleton = () => {
   
   // Only use Accelerate extension if we have the Accelerate URL
   if (process.env.DATABASE_URL?.includes('prisma.io')) {
-    return client.$extends(withAccelerate())
+    return client.$extends(withAccelerate()) as unknown as PrismaClient
   }
   
   return client
