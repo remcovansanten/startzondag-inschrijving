@@ -1,6 +1,11 @@
-# Startzondag Vrijwilligers Inschrijving
+# Startzondag Vrijwilligers Registratie v1.0.0
 
-Een moderne web applicatie voor het beheren van vrijwilligersaanmeldingen voor eenmalige evenementen. Gebouwd met Next.js 14, TypeScript, en Tailwind CSS.
+Een moderne, toegankelijke web applicatie voor het organiseren van vrijwilligers tijdens de Startzondag van de Gereformeerde Kerk Ermelo.
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15.4-black.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
 
 ## 🎯 Doel
 
