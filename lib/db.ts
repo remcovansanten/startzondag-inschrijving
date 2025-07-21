@@ -1,18 +1,21 @@
 import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
 declare global {
   var prisma: PrismaClient | undefined
 }
 
 const prismaClientSingleton = () => {
-  return new PrismaClient({
+  const client = new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL
-      }
-    }
   })
+  
+  // Only use Accelerate extension if we have the Accelerate URL
+  if (process.env.DATABASE_URL?.includes('prisma.io')) {
+    return client.$extends(withAccelerate())
+  }
+  
+  return client
 }
 
 export const prisma = globalThis.prisma ?? prismaClientSingleton()
