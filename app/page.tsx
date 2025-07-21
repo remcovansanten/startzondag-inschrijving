@@ -2,6 +2,8 @@ import Link from 'next/link';
 import TaakCard from '@/components/TaakCard';
 import { prisma } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 async function getTaken() {
   const taken = await prisma.taak.findMany({
     include: {
@@ -31,12 +33,27 @@ export default async function Home() {
   }, {} as Record<string, typeof taken>);
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-white">
+      {/* Header with logo */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-center space-x-4">
+            <img src="/logo-gke.png" alt="Gereformeerde Kerk Ermelo" className="h-16 w-auto" />
+            <div className="text-center">
+              <h1 className="text-2xl font-semibold text-primary">Gereformeerde Kerk Ermelo</h1>
+              <p className="text-sm text-gray-600">Startzondag 2025</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-2">Vrijwilligersacties</h1>
-        <p className="text-center text-gray-600 mb-8">
-          Meld je aan voor een taak en help mee!
-        </p>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">Vrijwilligers gezocht!</h2>
+          <p className="text-lg text-gray-700">
+            Help mee om de Startzondag tot een succes te maken
+          </p>
+        </div>
 
         {Object.entries(takenByCategory).map(([category, categoryTaken]) => (
           <div key={category} className="mb-8">

@@ -128,7 +128,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
       >
         {loading ? 'Bezig met aanmelden...' : 'Aanmelden'}
       </button>

@@ -49,9 +49,12 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+    <main className="min-h-screen bg-white flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full border border-gray-100">
+        <div className="text-center mb-6">
+          <img src="/logo-gke.png" alt="Gereformeerde Kerk Ermelo" className="h-16 w-auto mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-text-dark">Admin Login</h1>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -93,7 +96,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {loading ? 'Bezig met inloggen...' : 'Inloggen'}
           </button>

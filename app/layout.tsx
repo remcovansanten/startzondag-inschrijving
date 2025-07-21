@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Vrijwilligersacties",
-  description: "Meld je aan voor vrijwilligerstaken",
+  title: "Startzondag 2025 - Gereformeerde Kerk Ermelo",
+  description: "Meld je aan als vrijwilliger voor de Startzondag van de Gereformeerde Kerk Ermelo",
 };
 
 export default function RootLayout({
@@ -16,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl">
-      <body className={inter.className}>{children}</body>
+      <body className="font-sans text-text-dark">{children}</body>
     </html>
   );
 }
