@@ -1,0 +1,18 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run lint-staged for automatic formatting and linting
+npx lint-staged
+
+# Optional: AI code review reminder
+echo "🤖 Consider asking Claude to review your changes before committing:"
+echo "📝 git diff --cached | pbcopy  # Copy changes to clipboard (macOS)"
+echo "📝 git diff --cached | xclip -selection clipboard  # Copy changes to clipboard (Linux)"
+echo "🧠 Then ask Claude: 'Please review this Git diff for potential issues'"
+echo ""
+echo "⚡ Quick AI Review Checklist:"
+echo "  - TypeScript type safety"
+echo "  - Security vulnerabilities"
+echo "  - Performance considerations"
+echo "  - Error handling completeness"
+echo ""

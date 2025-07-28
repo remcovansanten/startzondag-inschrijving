@@ -15,12 +15,12 @@ Dit is een web applicatie voor het organiseren van een eenmalig evenement waarbi
 ## Technische Architectuur
 
 ### Tech Stack
-- **Framework**: Next.js 14 (App Router)
-- **Database**: SQLite met Prisma ORM
+- **Framework**: Next.js 15.4 (App Router)
+- **Database**: PostgreSQL met Prisma ORM
 - **Styling**: Tailwind CSS
 - **Email**: Resend API
 - **Deployment**: Vercel (of andere Node.js host)
-- **Authenticatie**: Simpele token-based auth voor admin
+- **Authenticatie**: JWT-based auth voor admin
 
 ### Project Structuur
 ```
@@ -41,9 +41,11 @@ volunteer-app/
 │       ├── admin/
 │       │   ├── login/route.ts   # Admin authenticatie
 │       │   ├── upload/route.ts  # Excel upload
-│       │   └── export/route.ts  # Export aanmeldingen
-│       └── webhook/
-│           └── email/route.ts   # Email status updates
+│       │   ├── export/route.ts  # Export aanmeldingen
+│       │   └── taken/route.ts   # Taken beheer
+│       ├── email-test/route.ts  # Email test endpoint
+│       ├── health/route.ts      # Health check endpoint
+│       └── wijzig/[token]/route.ts # Aanmelding wijzigen
 ├── components/
 │   ├── TaakCard.tsx            # Component voor taak weergave
 │   ├── AanmeldForm.tsx         # Aanmeldformulier
@@ -65,8 +67,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Taak {
@@ -323,13 +325,37 @@ NEXT_PUBLIC_SITE_URL="https://yoursite.nl"
 ## Development Workflow
 
 ### Initial Setup
+
+#### Option 1: Using Docker for PostgreSQL (Recommended)
 ```bash
+# Create Next.js app
 npx create-next-app@latest volunteer-app --typescript --tailwind --app
 cd volunteer-app
+
+# Install dependencies
 npm install prisma @prisma/client
 npm install bcryptjs jsonwebtoken resend xlsx
 npm install -D @types/bcryptjs @types/jsonwebtoken
-npx prisma init --datasource-provider sqlite
+
+# Start PostgreSQL with Docker
+docker run --name volunteer-postgres \
+  -e POSTGRES_PASSWORD=localdevpassword \
+  -e POSTGRES_DB=volunteer_dev \
+  -e POSTGRES_USER=volunteer \
+  -p 5432:5432 \
+  -d postgres:15-alpine
+
+# Initialize Prisma
+npx prisma init --datasource-provider postgresql
+
+# Update DATABASE_URL in .env
+# DATABASE_URL="postgresql://volunteer:localdevpassword@localhost:5432/volunteer_dev"
+```
+
+#### Option 2: Using Local PostgreSQL
+```bash
+# Same as above, but use your local PostgreSQL installation
+# DATABASE_URL="postgresql://user:password@localhost:5432/volunteer_dev"
 ```
 
 ### Development Commands

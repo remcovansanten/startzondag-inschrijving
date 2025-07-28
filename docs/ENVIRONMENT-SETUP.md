@@ -1,6 +1,10 @@
-# Environment Variables Setup for Vercel
+# Environment Variables Setup
 
-## Required Environment Variables
+This guide covers environment variable configuration for both production (Vercel) and local development.
+
+## Production Environment (Vercel)
+
+### Required Environment Variables
 
 You need to add these environment variables in your Vercel dashboard:
 
@@ -13,9 +17,9 @@ You need to add these environment variables in your Vercel dashboard:
 
 #### Email Configuration
 ```
-RESEND_API_KEY = re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ
-EMAIL_FROM = noreply@gkermelo.nl
-NEXT_PUBLIC_SITE_URL = https://startzondag-inschrijving.vercel.app
+RESEND_API_KEY = your_resend_api_key_here
+EMAIL_FROM = noreply@yourdomain.nl
+NEXT_PUBLIC_SITE_URL = https://your-project.vercel.app
 ```
 
 #### Security (if not already set)
@@ -49,16 +53,58 @@ After adding all environment variables:
 1. Redeploy your application
 2. Test the email functionality by registering for a task
 
-## Testing Email Locally
+## Local Development Environment
 
-To test emails locally, create a `.env.local` file with:
-```
-RESEND_API_KEY=re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ
-EMAIL_FROM=noreply@gkermelo.nl
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+### Complete .env.local Setup
+
+Create a `.env.local` file in your project root with:
+
+```bash
+# Database Configuration
+# For Docker PostgreSQL (recommended)
+DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
+
+# For local PostgreSQL installation
+# DATABASE_URL="postgresql://your_user:your_password@localhost:5432/startzondag_dev"
+
+# Admin Credentials
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="your-secure-password"
+
+# Security
+JWT_SECRET="generate-a-32-char-secret-using-openssl-rand-base64-32"
+
+# Email Configuration (optional for local dev)
+RESEND_API_KEY="your_resend_api_key_here"
+EMAIL_FROM="noreply@yourdomain.nl"
+
+# Site URL
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 ```
 
-Then run:
+### Database Setup with Docker
+
+```bash
+# Start PostgreSQL container
+docker run --name startzondag-postgres \
+  -e POSTGRES_PASSWORD=localdevpassword \
+  -e POSTGRES_DB=startzondag_dev \
+  -e POSTGRES_USER=startzondag \
+  -p 5432:5432 \
+  -d postgres:15-alpine
+
+# Push database schema
+export DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
+npx prisma db push
+
+# Seed with test data
+npm run seed
+```
+
+### Running the Application
+
 ```bash
 npm run dev
 ```
+
+Visit http://localhost:3000 to see the application.

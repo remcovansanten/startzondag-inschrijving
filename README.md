@@ -30,7 +30,7 @@ Deze applicatie is ontworpen om het aanmeldproces voor vrijwilligers te stroomli
 ## 🏗️ Technische Architectuur
 
 ### Tech Stack
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 15.4](https://nextjs.org/) (App Router)
 - **Taal**: [TypeScript](https://www.typescriptlang.org/)
 - **Database**: PostgreSQL met [Prisma ORM](https://www.prisma.io/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
@@ -101,7 +101,7 @@ Maak een `.env.local` bestand aan met de volgende variabelen:
 
 ```env
 # Database
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://user:password@localhost:5432/startzondag_dev"
 
 # Admin Credentials
 ADMIN_USERNAME="admin"
@@ -126,10 +126,10 @@ De applicatie werkt zonder email configuratie, maar voor volledige functionalite
    - Maak een account aan op [resend.com](https://resend.com)
    - Kopieer je API key naar `.env.local`
 
-2. **Gmail SMTP (alternatief)**
-   - Installeer `npm install nodemailer @types/nodemailer`
-   - Gebruik de `email-gmail.ts` implementatie
-   - Configureer Gmail app password
+2. **Alternatieve email providers**
+   - Voor andere email providers, pas de `lib/email.ts` implementatie aan
+   - Ondersteunde providers: SendGrid, Mailgun, Amazon SES
+   - Raadpleeg de documentatie van je gekozen provider
 
 ## 📱 Gebruik
 
@@ -223,4 +223,4 @@ Voor vragen of ondersteuning, neem contact op via de GitLab issues.
 
 ---
 
-Ontwikkeld met ❤️ voor Startzondag
+Ontwikkeld met ❤️ voor Startzondag∏

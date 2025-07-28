@@ -8,13 +8,25 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=__tests__",
+    "test:integration": "jest --testPathPattern=__tests__/api",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:smoke": "node scripts/smoke-tests.js",
     "seed": "tsx scripts/seed.ts",
     "seed:tasks": "tsx scripts/seed-tasks.ts",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma db push && next build"
+    "vercel-build": "prisma generate && prisma db push && next build",
+    "prepare": "husky",
+    "quality:check": "npm run lint && npm run type-check && npm run test",
+    "quality:fix": "npm run lint -- --fix"
   },
   "keywords": [],
   "author": "",
@@ -46,8 +58,10 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "husky": "^9.1.7",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
+    "lint-staged": "^16.1.2",
     "tsx": "^4.20.3"
   }
 }
