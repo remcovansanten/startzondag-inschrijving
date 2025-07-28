@@ -334,7 +334,7 @@ cd volunteer-app
 
 # Install dependencies
 npm install prisma @prisma/client
-npm install bcryptjs jsonwebtoken resend xlsx
+npm install bcryptjs jsonwebtoken resend exceljs
 npm install -D @types/bcryptjs @types/jsonwebtoken
 
 # Start PostgreSQL with Docker

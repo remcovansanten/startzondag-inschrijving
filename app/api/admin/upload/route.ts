@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,12 +19,32 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Parse Excel file
-    const workbook = XLSX.read(buffer, { type: 'buffer' });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer);
+    const worksheet = workbook.worksheets[0];
     
     // Convert to JSON
-    const data = XLSX.utils.sheet_to_json(worksheet) as any[];
+    const data: any[] = [];
+    let headers: string[] = [];
+    
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) {
+        // First row contains headers
+        headers = row.values.slice(1).map(v => v?.toString() || '');
+      } else {
+        // Data rows
+        const rowData: any = {};
+        row.values.slice(1).forEach((value, index) => {
+          const header = headers[index];
+          if (header) {
+            rowData[header] = value;
+          }
+        });
+        if (Object.keys(rowData).length > 0) {
+          data.push(rowData);
+        }
+      }
+    });
 
     // Validate data
     const errors: string[] = [];

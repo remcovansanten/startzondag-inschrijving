@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 export async function GET() {
   try {
@@ -14,137 +14,168 @@ export async function GET() {
     });
 
     // Create workbook
-    const wb = XLSX.utils.book_new();
+    const workbook = new ExcelJS.Workbook();
+    
+    // Set workbook properties
+    workbook.creator = 'Startzondag Vrijwilligers';
+    workbook.created = new Date();
 
     // Overview sheet
-    const overviewData = taken.map(taak => ({
-      'Taak': taak.naam,
-      'Categorie': taak.categorie || '',
-      'Beschrijving': taak.beschrijving || '',
-      'Max Aantal': taak.maxAantal,
-      'Aanmeldingen': taak.aanmeldingen.length,
-      'Vrije Plekken': taak.maxAantal - taak.aanmeldingen.length,
-      'Status': taak.aanmeldingen.length >= taak.maxAantal ? 'Vol' : 'Open'
-    }));
-    
-    const overviewSheet = XLSX.utils.json_to_sheet(overviewData);
-    XLSX.utils.book_append_sheet(wb, overviewSheet, 'Overzicht');
+    const overviewSheet = workbook.addWorksheet('Overzicht');
+    overviewSheet.columns = [
+      { header: 'Taak', key: 'taak', width: 30 },
+      { header: 'Categorie', key: 'categorie', width: 20 },
+      { header: 'Beschrijving', key: 'beschrijving', width: 40 },
+      { header: 'Max Aantal', key: 'maxAantal', width: 15 },
+      { header: 'Aanmeldingen', key: 'aanmeldingen', width: 15 },
+      { header: 'Vrije Plekken', key: 'vrijePlekken', width: 15 },
+      { header: 'Status', key: 'status', width: 10 }
+    ];
+
+    taken.forEach(taak => {
+      overviewSheet.addRow({
+        taak: taak.naam,
+        categorie: taak.categorie || '',
+        beschrijving: taak.beschrijving || '',
+        maxAantal: taak.maxAantal,
+        aanmeldingen: taak.aanmeldingen.length,
+        vrijePlekken: taak.maxAantal - taak.aanmeldingen.length,
+        status: taak.aanmeldingen.length >= taak.maxAantal ? 'Vol' : 'Open'
+      });
+    });
+
+    // Style the header row
+    overviewSheet.getRow(1).font = { bold: true };
+    overviewSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
 
     // All registrations sheet
-    const allRegistrations = taken.flatMap(taak => 
-      taak.aanmeldingen.map(aanmelding => ({
-        'Taak': taak.naam,
-        'Categorie': taak.categorie || '',
-        'Naam': aanmelding.naam,
-        'Email': aanmelding.email,
-        'Telefoon': aanmelding.telefoon,
-        'Opmerking': aanmelding.opmerking || '',
-        'Aangemeld op': new Date(aanmelding.createdAt).toLocaleDateString('nl-NL'),
-        'Bevestigd': aanmelding.bevestigd ? 'Ja' : 'Nee'
-      }))
-    );
-    
-    if (allRegistrations.length > 0) {
-      const allSheet = XLSX.utils.json_to_sheet(allRegistrations);
-      XLSX.utils.book_append_sheet(wb, allSheet, 'Alle Aanmeldingen');
-    }
+    const allSheet = workbook.addWorksheet('Alle Aanmeldingen');
+    allSheet.columns = [
+      { header: 'Taak', key: 'taak', width: 30 },
+      { header: 'Categorie', key: 'categorie', width: 20 },
+      { header: 'Naam', key: 'naam', width: 25 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Telefoon', key: 'telefoon', width: 15 },
+      { header: 'Opmerking', key: 'opmerking', width: 40 },
+      { header: 'Aangemeld op', key: 'aangemeldOp', width: 20 },
+      { header: 'Bevestigd', key: 'bevestigd', width: 10 }
+    ];
 
-    // Contact list sheet - simplified view for easy contact
-    const contactList = taken.flatMap(taak => 
-      taak.aanmeldingen.map(aanmelding => ({
-        'Taak': taak.naam,
-        'Naam': aanmelding.naam,
-        'Email': aanmelding.email,
-        'Telefoon': aanmelding.telefoon
-      }))
-    );
-    
-    if (contactList.length > 0) {
-      const contactSheet = XLSX.utils.json_to_sheet(contactList);
-      contactSheet['!cols'] = [
-        { wch: 30 }, // Taak
-        { wch: 25 }, // Naam
-        { wch: 30 }, // Email
-        { wch: 15 }  // Telefoon
-      ];
-      XLSX.utils.book_append_sheet(wb, contactSheet, 'Contactlijst');
-    }
-
-    // Sheet per task with enhanced information
     taken.forEach(taak => {
-      const taskData = [];
+      taak.aanmeldingen.forEach(aanmelding => {
+        allSheet.addRow({
+          taak: taak.naam,
+          categorie: taak.categorie || '',
+          naam: aanmelding.naam,
+          email: aanmelding.email,
+          telefoon: aanmelding.telefoon,
+          opmerking: aanmelding.opmerking || '',
+          aangemeldOp: new Date(aanmelding.createdAt).toLocaleDateString('nl-NL'),
+          bevestigd: aanmelding.bevestigd ? 'Ja' : 'Nee'
+        });
+      });
+    });
+
+    allSheet.getRow(1).font = { bold: true };
+    allSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    // Contact list sheet
+    const contactSheet = workbook.addWorksheet('Contactlijst');
+    contactSheet.columns = [
+      { header: 'Taak', key: 'taak', width: 30 },
+      { header: 'Naam', key: 'naam', width: 25 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Telefoon', key: 'telefoon', width: 15 }
+    ];
+
+    taken.forEach(taak => {
+      taak.aanmeldingen.forEach(aanmelding => {
+        contactSheet.addRow({
+          taak: taak.naam,
+          naam: aanmelding.naam,
+          email: aanmelding.email,
+          telefoon: aanmelding.telefoon
+        });
+      });
+    });
+
+    contactSheet.getRow(1).font = { bold: true };
+    contactSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    // Individual task sheets
+    taken.forEach(taak => {
+      // Limit sheet name to 31 characters (Excel limitation)
+      const sheetName = taak.naam.substring(0, 31);
+      const taskSheet = workbook.addWorksheet(sheetName);
       
       // Add task header information
-      taskData.push({
-        'Naam': `TAAK: ${taak.naam}`,
-        'Email': '',
-        'Telefoon': '',
-        'Opmerking': taak.beschrijving || '',
-        'Aangemeld op': ''
-      });
+      taskSheet.getCell('A1').value = `TAAK: ${taak.naam}`;
+      taskSheet.getCell('A1').font = { bold: true, size: 14 };
       
-      taskData.push({
-        'Naam': `Categorie: ${taak.categorie || 'Geen'}`,
-        'Email': '',
-        'Telefoon': '',
-        'Opmerking': `${taak.aanmeldingen.length} van ${taak.maxAantal} plekken bezet`,
-        'Aangemeld op': ''
-      });
+      taskSheet.getCell('A2').value = `Categorie: ${taak.categorie || 'Geen'}`;
+      taskSheet.getCell('A3').value = `${taak.aanmeldingen.length} van ${taak.maxAantal} plekken bezet`;
       
-      // Add empty row
-      taskData.push({
-        'Naam': '',
-        'Email': '',
-        'Telefoon': '',
-        'Opmerking': '',
-        'Aangemeld op': ''
-      });
+      if (taak.beschrijving) {
+        taskSheet.getCell('A4').value = `Beschrijving: ${taak.beschrijving}`;
+      }
+
+      // Add registrations
+      const startRow = 6;
+      taskSheet.getCell(`A${startRow}`).value = 'Naam';
+      taskSheet.getCell(`B${startRow}`).value = 'Email';
+      taskSheet.getCell(`C${startRow}`).value = 'Telefoon';
+      taskSheet.getCell(`D${startRow}`).value = 'Opmerking';
+      taskSheet.getCell(`E${startRow}`).value = 'Aangemeld op';
       
-      // Add volunteer data
+      // Style header row
+      taskSheet.getRow(startRow).font = { bold: true };
+      taskSheet.getRow(startRow).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' }
+      };
+
+      // Set column widths
+      taskSheet.getColumn(1).width = 25; // Naam
+      taskSheet.getColumn(2).width = 30; // Email
+      taskSheet.getColumn(3).width = 15; // Telefoon
+      taskSheet.getColumn(4).width = 40; // Opmerking
+      taskSheet.getColumn(5).width = 20; // Aangemeld op
+
       if (taak.aanmeldingen.length > 0) {
         taak.aanmeldingen.forEach((aanmelding, index) => {
-          taskData.push({
-            'Naam': aanmelding.naam,
-            'Email': aanmelding.email,
-            'Telefoon': aanmelding.telefoon,
-            'Opmerking': aanmelding.opmerking || '',
-            'Aangemeld op': new Date(aanmelding.createdAt).toLocaleDateString('nl-NL', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })
+          const rowNum = startRow + index + 1;
+          taskSheet.getCell(`A${rowNum}`).value = aanmelding.naam;
+          taskSheet.getCell(`B${rowNum}`).value = aanmelding.email;
+          taskSheet.getCell(`C${rowNum}`).value = aanmelding.telefoon;
+          taskSheet.getCell(`D${rowNum}`).value = aanmelding.opmerking || '';
+          taskSheet.getCell(`E${rowNum}`).value = new Date(aanmelding.createdAt).toLocaleDateString('nl-NL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
           });
         });
       } else {
-        taskData.push({
-          'Naam': 'Nog geen aanmeldingen',
-          'Email': '',
-          'Telefoon': '',
-          'Opmerking': '',
-          'Aangemeld op': ''
-        });
+        taskSheet.getCell(`A${startRow + 1}`).value = 'Nog geen aanmeldingen';
       }
-      
-      const taskSheet = XLSX.utils.json_to_sheet(taskData);
-      
-      // Set column widths for better readability
-      taskSheet['!cols'] = [
-        { wch: 25 }, // Naam
-        { wch: 30 }, // Email
-        { wch: 15 }, // Telefoon
-        { wch: 40 }, // Opmerking
-        { wch: 20 }  // Aangemeld op
-      ];
-      
-      // Limit sheet name to 31 characters (Excel limitation)
-      const sheetName = taak.naam.substring(0, 31);
-      XLSX.utils.book_append_sheet(wb, taskSheet, sheetName);
     });
 
     // Generate buffer
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    const buffer = await workbook.xlsx.writeBuffer();
 
     // Return file
     return new NextResponse(buffer, {
