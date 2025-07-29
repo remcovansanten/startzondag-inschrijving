@@ -77,13 +77,12 @@ else
 fi
 
 echo ""
-echo "Step 3: Admin Credentials"
-echo "========================"
-echo "Please provide production admin credentials:"
-read -p "Production admin username [admin]: " PROD_ADMIN_USERNAME
-PROD_ADMIN_USERNAME=${PROD_ADMIN_USERNAME:-admin}
-read -s -p "Production admin password (hidden): " PROD_ADMIN_PASSWORD
-echo ""
+echo "Step 3: Using Admin Credentials from .env.local"
+echo "=============================================="
+echo "Using existing production credentials:"
+echo "Username: admin"
+PROD_ADMIN_USERNAME="admin"
+PROD_ADMIN_PASSWORD="usYfk*nJy3zfDiW__WU-"
 
 echo ""
 echo "Step 4: Adding all secrets to GitHub"

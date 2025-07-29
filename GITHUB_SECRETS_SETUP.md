@@ -55,7 +55,7 @@ If same, I'll use the production URL. Otherwise, provide: `STAGING_DATABASE_URL`
 
 ## Step 3: JWT Secrets
 
-I'll generate unique JWT secrets for each environment:
+I'll use your existing production JWT secret and generate unique ones for other environments:
 
 ### Development
 ```
@@ -72,7 +72,7 @@ TEST_JWT_SECRET="test-jwt-secret-aB3dE5gH7jK9mN2pQ4sT6vW8xZ1"
 STAGING_JWT_SECRET="staging-jwt-secret-cD4fG6hJ8kL0nP2qS5uV7wX9yB3"
 ```
 
-### Production
+### Production (from your .env.local)
 ```
 PROD_JWT_SECRET="IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0="
 ```
@@ -91,12 +91,14 @@ PROD_RESEND_API_KEY="re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
 
 ## Step 5: Admin Credentials
 
-**I need these from you**:
-- `PROD_ADMIN_USERNAME` (or use "admin"?)
-- `PROD_ADMIN_PASSWORD` (create a strong production password)
+### Production (from your .env.local)
+```
+PROD_ADMIN_USERNAME="admin"
+PROD_ADMIN_PASSWORD="usYfk*nJy3zfDiW__WU-"
+```
 
-For other environments, I'll use:
-- Dev/Test/Staging: Username "admin", Password "test-password-123"
+### Other Environments
+- Dev/Test/Staging: Username "admin", Password "{environment}-password-123"
 
 ## Summary of What I Need From You:
 
@@ -109,8 +111,4 @@ For other environments, I'll use:
    - Should test/staging use the same database as production? (Yes/No)
    - If no, provide separate database URLs
 
-3. **Production Admin Credentials**:
-   - Admin username for production
-   - Admin password for production (make it strong!)
-
-Once you provide these, I'll create a complete script to add all secrets to GitHub.
+Once you provide these, I'll update the script to add all secrets to GitHub.

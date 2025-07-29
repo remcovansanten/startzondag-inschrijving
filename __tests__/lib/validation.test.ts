@@ -19,7 +19,7 @@ describe('Phone Number Validation', () => {
 
     test('rejects invalid numbers', () => {
       expect(validateDutchPhoneNumber('123')).toBe(false);
-      expect(validateDutchPhoneNumber('0712345678')).toBe(false); // Invalid area code
+      expect(validateDutchPhoneNumber('0912345678')).toBe(false); // Invalid area code (09x doesn't exist)
       expect(validateDutchPhoneNumber('061234567')).toBe(false); // Too short
       expect(validateDutchPhoneNumber('06123456789')).toBe(false); // Too long
       expect(validateDutchPhoneNumber('+32612345678')).toBe(false); // Wrong country
