@@ -69,7 +69,7 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--env DATABASE_URL=${{ secrets.DEV_DATABASE_URL }} --env JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}'
+          vercel-args: '--env DATABASE_URL=${{ secrets.DEV_DATABASE_URL }} --env JWT_SECRET=${{ secrets.DEV_JWT_SECRET }} --env RESEND_API_KEY=${{ secrets.DEV_RESEND_API_KEY }} --env EMAIL_FROM="Startzondag GKE <noreply@gke-startzondag.nl>" --env NEXT_PUBLIC_SITE_URL=https://dev-startzondag.vercel.app --env ADMIN_USERNAME=${{ secrets.DEV_ADMIN_USERNAME }} --env ADMIN_PASSWORD=${{ secrets.DEV_ADMIN_PASSWORD }}'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           alias-domains: dev-startzondag.vercel.app
@@ -120,7 +120,7 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--env DATABASE_URL=${{ secrets.TEST_DATABASE_URL }} --env JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}'
+          vercel-args: '--env DATABASE_URL=${{ secrets.TEST_DATABASE_URL }} --env JWT_SECRET=${{ secrets.TEST_JWT_SECRET }} --env RESEND_API_KEY=${{ secrets.TEST_RESEND_API_KEY }} --env EMAIL_FROM="Startzondag GKE <noreply@gke-startzondag.nl>" --env NEXT_PUBLIC_SITE_URL=https://test-startzondag.vercel.app --env ADMIN_USERNAME=${{ secrets.TEST_ADMIN_USERNAME }} --env ADMIN_PASSWORD=${{ secrets.TEST_ADMIN_PASSWORD }}'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           alias-domains: test-startzondag.vercel.app
@@ -146,7 +146,7 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--env DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} --env JWT_SECRET=${{ secrets.STAGING_JWT_SECRET }}'
+          vercel-args: '--env DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} --env JWT_SECRET=${{ secrets.STAGING_JWT_SECRET }} --env RESEND_API_KEY=${{ secrets.STAGING_RESEND_API_KEY }} --env EMAIL_FROM="Startzondag GKE <noreply@gke-startzondag.nl>" --env NEXT_PUBLIC_SITE_URL=https://staging-startzondag.vercel.app --env ADMIN_USERNAME=${{ secrets.STAGING_ADMIN_USERNAME }} --env ADMIN_PASSWORD=${{ secrets.STAGING_ADMIN_PASSWORD }}'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           alias-domains: staging-startzondag.vercel.app
@@ -172,7 +172,7 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--prod --env DATABASE_URL=${{ secrets.PROD_DATABASE_URL }} --env JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}'
+          vercel-args: '--prod --env DATABASE_URL=${{ secrets.PROD_DATABASE_URL }} --env JWT_SECRET=${{ secrets.PROD_JWT_SECRET }} --env RESEND_API_KEY=${{ secrets.PROD_RESEND_API_KEY }} --env EMAIL_FROM="Startzondag GKE <noreply@gke-startzondag.nl>" --env NEXT_PUBLIC_SITE_URL=https://startzondag.gk-ermelo.nl --env ADMIN_USERNAME=${{ secrets.PROD_ADMIN_USERNAME }} --env ADMIN_PASSWORD=${{ secrets.PROD_ADMIN_PASSWORD }}'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           
