@@ -16,11 +16,11 @@ export async function POST(request: NextRequest) {
 
     // Read file content
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
     // Parse Excel file
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(buffer);
+    // Use the buffer method directly from ExcelJS
+    await workbook.xlsx.load(bytes as any);
     const worksheet = workbook.worksheets[0];
     
     // Convert to JSON
@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber === 1) {
         // First row contains headers
-        headers = row.values.slice(1).map(v => v?.toString() || '');
+        headers = (row.values as any[]).slice(1).map((v: any) => v?.toString() || '');
       } else {
         // Data rows
         const rowData: any = {};
-        row.values.slice(1).forEach((value, index) => {
+        (row.values as any[]).slice(1).forEach((value: any, index: number) => {
           const header = headers[index];
           if (header) {
             rowData[header] = value;

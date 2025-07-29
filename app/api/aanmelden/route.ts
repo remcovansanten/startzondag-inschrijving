@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
     try {
       console.log('Preparing to send email:', {
         to: email,
-        taakNaam: taak.naam,
+        taakNaam: result.taak.naam,
         hasApiKey: !!process.env.RESEND_API_KEY,
         apiKeyStart: process.env.RESEND_API_KEY?.substring(0, 10),
         emailFrom: process.env.EMAIL_FROM,
