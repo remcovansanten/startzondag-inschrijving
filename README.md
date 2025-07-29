@@ -1,4 +1,4 @@
-# Startzondag Vrijwilligers Registratie v1.0.0
+# Startzondag Vrijwilligers Registratie
 
 Een moderne, toegankelijke web applicatie voor het organiseren van vrijwilligers tijdens de Startzondag van de Gereformeerde Kerk Ermelo.
 
