@@ -45,3 +45,7 @@ next-env.d.ts
 
 # generated
 /generated/prisma
+
+# Sensitive files - NEVER commit these
+GITHUB_SECRETS_SETUP.md
+scripts/add-github-secrets.sh

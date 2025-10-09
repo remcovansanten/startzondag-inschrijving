@@ -57,7 +57,8 @@ echo "============================="
 echo "Do you want to use the same production database for all environments?"
 read -p "(not recommended for production) [y/N]: " USE_SAME_DB
 
-PROD_DB="postgres://19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48:sk_gQM2SpF0LwfKZ77AS87sy@db.prisma.io:5432/?sslmode=require"
+# Database URL should be provided by user
+read -p "PROD_DATABASE_URL: " PROD_DB
 
 if [[ "$USE_SAME_DB" =~ ^[Yy]$ ]]; then
     DEV_DATABASE_URL="$PROD_DB"
@@ -82,7 +83,8 @@ echo "=============================================="
 echo "Using existing production credentials:"
 echo "Username: admin"
 PROD_ADMIN_USERNAME="admin"
-PROD_ADMIN_PASSWORD="usYfk*nJy3zfDiW__WU-"
+read -s -p "PROD_ADMIN_PASSWORD: " PROD_ADMIN_PASSWORD
+echo ""
 
 echo ""
 echo "Step 4: Adding all secrets to GitHub"
@@ -101,16 +103,32 @@ add_secret "STAGING_DATABASE_URL" "$STAGING_DATABASE_URL"
 add_secret "PROD_DATABASE_URL" "$PROD_DATABASE_URL"
 
 # JWT Secrets
-add_secret "DEV_JWT_SECRET" "dev-jwt-secret-zX9mK3nP5qR8tV2wY6bC4fH7jL0"
-add_secret "TEST_JWT_SECRET" "test-jwt-secret-aB3dE5gH7jK9mN2pQ4sT6vW8xZ1"
-add_secret "STAGING_JWT_SECRET" "staging-jwt-secret-cD4fG6hJ8kL0nP2qS5uV7wX9yB3"
-add_secret "PROD_JWT_SECRET" "IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0="
+echo ""
+echo "Generating secure JWT secrets..."
+DEV_JWT_SECRET=$(openssl rand -base64 32)
+TEST_JWT_SECRET=$(openssl rand -base64 32)
+STAGING_JWT_SECRET=$(openssl rand -base64 32)
+read -p "PROD_JWT_SECRET (or press Enter to generate): " PROD_JWT_SECRET
+if [ -z "$PROD_JWT_SECRET" ]; then
+    PROD_JWT_SECRET=$(openssl rand -base64 32)
+    echo "Generated: $PROD_JWT_SECRET"
+fi
 
-# Email API Keys (using same key for all environments)
-add_secret "DEV_RESEND_API_KEY" "re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-add_secret "TEST_RESEND_API_KEY" "re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-add_secret "STAGING_RESEND_API_KEY" "re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-add_secret "PROD_RESEND_API_KEY" "re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
+add_secret "DEV_JWT_SECRET" "$DEV_JWT_SECRET"
+add_secret "TEST_JWT_SECRET" "$TEST_JWT_SECRET"
+add_secret "STAGING_JWT_SECRET" "$STAGING_JWT_SECRET"
+add_secret "PROD_JWT_SECRET" "$PROD_JWT_SECRET"
+
+# Email API Keys
+echo ""
+echo "Step 5: Resend API Keys"
+echo "======================"
+read -p "RESEND_API_KEY (will be used for all environments): " RESEND_API_KEY
+
+add_secret "DEV_RESEND_API_KEY" "$RESEND_API_KEY"
+add_secret "TEST_RESEND_API_KEY" "$RESEND_API_KEY"
+add_secret "STAGING_RESEND_API_KEY" "$RESEND_API_KEY"
+add_secret "PROD_RESEND_API_KEY" "$RESEND_API_KEY"
 
 # Admin credentials
 add_secret "DEV_ADMIN_USERNAME" "admin"

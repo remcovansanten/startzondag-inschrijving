@@ -37,12 +37,12 @@ I'll use the following from your existing configuration:
 
 ### Production Database
 ```
-PROD_DATABASE_URL="postgres://19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48:sk_gQM2SpF0LwfKZ77AS87sy@db.prisma.io:5432/?sslmode=require"
+PROD_DATABASE_URL="YOUR_PRODUCTION_DATABASE_URL_HERE"
 ```
 
 ### Development Database
 ```
-DEV_DATABASE_URL="postgres://19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48:sk_gQM2SpF0LwfKZ77AS87sy@db.prisma.io:5432/?sslmode=require"
+DEV_DATABASE_URL="YOUR_DEVELOPMENT_DATABASE_URL_HERE"
 ```
 
 ### Test Database
@@ -59,42 +59,42 @@ I'll use your existing production JWT secret and generate unique ones for other 
 
 ### Development
 ```
-DEV_JWT_SECRET="dev-jwt-secret-zX9mK3nP5qR8tV2wY6bC4fH7jL0"
+DEV_JWT_SECRET="GENERATE_A_SECURE_DEV_JWT_SECRET"
 ```
 
 ### Test
 ```
-TEST_JWT_SECRET="test-jwt-secret-aB3dE5gH7jK9mN2pQ4sT6vW8xZ1"
+TEST_JWT_SECRET="GENERATE_A_SECURE_TEST_JWT_SECRET"
 ```
 
 ### Staging
 ```
-STAGING_JWT_SECRET="staging-jwt-secret-cD4fG6hJ8kL0nP2qS5uV7wX9yB3"
+STAGING_JWT_SECRET="GENERATE_A_SECURE_STAGING_JWT_SECRET"
 ```
 
-### Production (from your .env.local)
+### Production
 ```
-PROD_JWT_SECRET="IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0="
+PROD_JWT_SECRET="GENERATE_A_SECURE_PRODUCTION_JWT_SECRET"
 ```
 
 ## Step 4: Email Configuration
 
 Using your existing Resend configuration:
 
-### All Environments (using same API key)
+### All Environments
 ```
-DEV_RESEND_API_KEY="re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-TEST_RESEND_API_KEY="re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-STAGING_RESEND_API_KEY="re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
-PROD_RESEND_API_KEY="re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ"
+DEV_RESEND_API_KEY="YOUR_DEV_RESEND_API_KEY"
+TEST_RESEND_API_KEY="YOUR_TEST_RESEND_API_KEY"
+STAGING_RESEND_API_KEY="YOUR_STAGING_RESEND_API_KEY"
+PROD_RESEND_API_KEY="YOUR_PRODUCTION_RESEND_API_KEY"
 ```
 
 ## Step 5: Admin Credentials
 
-### Production (from your .env.local)
+### Production
 ```
 PROD_ADMIN_USERNAME="admin"
-PROD_ADMIN_PASSWORD="usYfk*nJy3zfDiW__WU-"
+PROD_ADMIN_PASSWORD="YOUR_SECURE_PRODUCTION_PASSWORD"
 ```
 
 ### Other Environments
