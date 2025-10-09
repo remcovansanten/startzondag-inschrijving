@@ -123,7 +123,7 @@ NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 De applicatie werkt zonder email configuratie, maar voor volledige functionaliteit:
 
 1. **Resend (aanbevolen)**
-   - Maak een account aan op [resend.com](https://resend.com)
+   - Maak een account aan op (https://resend.com)
    - Kopieer je API key naar `.env.local`
 
 2. **Gmail SMTP (alternatief)**
@@ -215,7 +215,7 @@ Onder de voorwaarden dat:
 - 📝 Je moet de originele makers vermelden
 - 🔄 Aanpassingen moeten onder dezelfde licentie gedeeld worden
 
-Zie [LICENSE](LICENSE) voor details.
+Zie License voor details.
 
 ## 👥 Contact
 
