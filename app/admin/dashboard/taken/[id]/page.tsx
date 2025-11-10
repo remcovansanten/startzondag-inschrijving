@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import DeleteButton from './DeleteButton';
+import BulkRegistrationActions from '@/components/BulkRegistrationActions';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,56 +83,9 @@ export default async function TaakDetailPage({ params }: { params: Promise<{ id:
           <div className="p-6 border-b">
             <h2 className="text-xl font-semibold">Aanmeldingen ({taak.aanmeldingen.length})</h2>
           </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Naam
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Telefoon
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Aangemeld op
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Opmerking
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {taak.aanmeldingen.map((aanmelding) => (
-                  <tr key={aanmelding.id}>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium">
-                      {aanmelding.naam}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {aanmelding.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {aanmelding.telefoon}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(aanmelding.createdAt).toLocaleDateString('nl-NL')}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {aanmelding.opmerking || '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            {taak.aanmeldingen.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                Nog geen aanmeldingen voor deze taak
-              </div>
-            )}
+
+          <div className="p-6">
+            <BulkRegistrationActions registrations={taak.aanmeldingen} />
           </div>
         </div>
       </div>

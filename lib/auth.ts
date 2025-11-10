@@ -1,7 +1,17 @@
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-min-32-chars';
+const jwtSecretEnv = process.env.JWT_SECRET;
+
+if (!jwtSecretEnv || jwtSecretEnv.length < 32) {
+  throw new Error(
+    'JWT_SECRET environment variable must be set and at least 32 characters. ' +
+    'Generate one with: openssl rand -base64 32'
+  );
+}
+
+// TypeScript now knows JWT_SECRET is a string
+const JWT_SECRET: string = jwtSecretEnv;
 
 export async function createToken(payload: any) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });

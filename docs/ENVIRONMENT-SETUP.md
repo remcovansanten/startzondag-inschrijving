@@ -32,6 +32,20 @@ You can generate a JWT secret using:
 openssl rand -base64 32
 ```
 
+#### Redis Configuration (Optional - Recommended for Production)
+```
+UPSTASH_REDIS_REST_URL = https://your-redis-url.upstash.io
+UPSTASH_REDIS_REST_TOKEN = your_redis_token
+```
+
+To set up Redis for production rate limiting:
+1. Create a free account at https://upstash.com
+2. Create a new Redis database
+3. Copy the REST URL and REST Token
+4. Add them to your Vercel environment variables
+
+**Note:** If Redis is not configured, the application will automatically fall back to in-memory rate limiting (suitable for development but not for production at scale).
+
 ### 3. Important Notes
 
 - Make sure to add these for all environments (Production, Preview, Development)
@@ -80,6 +94,11 @@ EMAIL_FROM="noreply@yourdomain.nl"
 
 # Site URL
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+
+# Redis Configuration (optional for local dev)
+# Leave these unset to use in-memory rate limiting
+# UPSTASH_REDIS_REST_URL="https://your-redis-url.upstash.io"
+# UPSTASH_REDIS_REST_TOKEN="your_redis_token"
 ```
 
 ### Database Setup with Docker

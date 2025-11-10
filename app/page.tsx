@@ -2,7 +2,8 @@ import Link from 'next/link';
 import TaakCard from '@/components/TaakCard';
 import { prisma } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+// Enable ISR with 60-second revalidation
+export const revalidate = 60;
 
 async function getTaken() {
   const taken = await prisma.taak.findMany({

@@ -39,8 +39,26 @@ model Aanmelding {
 }
 
 model Admin {
-  id            String   @id @default(cuid())
-  username      String   @unique
+  id            String      @id @default(cuid())
+  username      String      @unique
   passwordHash  String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime    @default(now())
+  auditLogs     AuditLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action    String   // "CREATE_TASK", "UPDATE_TASK", "DELETE_TASK", "DELETE_REGISTRATION", "EXPORT_DATA"
+  entity    String   // "Taak", "Aanmelding"
+  entityId  String?  // ID of affected entity
+  details   Json?    // Additional context
+  ipAddress String?  // Admin's IP
+  userAgent String?  // Admin's browser
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([action])
 }

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { createAuditLog } from '@/lib/audit';
+import { getSession } from '@/lib/auth';
 
 // GET a single task
 export async function GET(
@@ -87,6 +89,29 @@ export async function PUT(
       },
     });
 
+    // Audit log
+    const session = await getSession();
+    if (session && typeof session === 'object' && 'id' in session) {
+      await createAuditLog({
+        adminId: session.id as string,
+        action: 'UPDATE_TASK',
+        entity: 'Taak',
+        entityId: updatedTaak.id,
+        details: {
+          naam: updatedTaak.naam,
+          maxAantal: updatedTaak.maxAantal,
+          categorie: updatedTaak.categorie,
+          changes: {
+            naam: existingTask.naam !== naam,
+            maxAantal: existingTask.maxAantal !== parseInt(maxAantal),
+            categorie: existingTask.categorie !== categorie
+          }
+        },
+        ipAddress: request.headers.get('x-forwarded-for') || undefined,
+        userAgent: request.headers.get('user-agent') || undefined,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       taak: updatedTaak
@@ -130,6 +155,20 @@ export async function DELETE(
         { message: `Deze taak kan niet worden verwijderd omdat er ${task._count.aanmeldingen} aanmeldingen zijn. Verwijder eerst alle aanmeldingen.` },
         { status: 400 }
       );
+    }
+
+    // Audit log before deletion
+    const session = await getSession();
+    if (session && typeof session === 'object' && 'id' in session) {
+      await createAuditLog({
+        adminId: session.id as string,
+        action: 'DELETE_TASK',
+        entity: 'Taak',
+        entityId: id,
+        details: { naam: task.naam, categorie: task.categorie },
+        ipAddress: request.headers.get('x-forwarded-for') || undefined,
+        userAgent: request.headers.get('user-agent') || undefined,
+      });
     }
 
     // Delete the task

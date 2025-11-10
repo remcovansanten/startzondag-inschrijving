@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { createAuditLog } from '@/lib/audit';
+import { getSession } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,6 +23,20 @@ export async function POST(request: NextRequest) {
         categorie: categorie || null,
       },
     });
+
+    // Audit log
+    const session = await getSession();
+    if (session && typeof session === 'object' && 'id' in session) {
+      await createAuditLog({
+        adminId: session.id as string,
+        action: 'CREATE_TASK',
+        entity: 'Taak',
+        entityId: taak.id,
+        details: { naam: taak.naam, maxAantal: taak.maxAantal, categorie: taak.categorie },
+        ipAddress: request.headers.get('x-forwarded-for') || undefined,
+        userAgent: request.headers.get('user-agent') || undefined,
+      });
+    }
 
     return NextResponse.json({
       success: true,
