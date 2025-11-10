@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import ExcelJS from 'exceljs';
+import { createAuditLog } from '@/lib/audit';
+import { getSession } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const taken = await prisma.taak.findMany({
       include: {
@@ -176,6 +178,22 @@ export async function GET() {
 
     // Generate buffer
     const buffer = await workbook.xlsx.writeBuffer();
+
+    // Audit log
+    const session = await getSession();
+    if (session && typeof session === 'object' && 'id' in session) {
+      await createAuditLog({
+        adminId: session.id as string,
+        action: 'EXPORT_DATA',
+        entity: 'Aanmelding',
+        details: {
+          takenCount: taken.length,
+          totalRegistrations: taken.reduce((sum, taak) => sum + taak.aanmeldingen.length, 0)
+        },
+        ipAddress: request.headers.get('x-forwarded-for') || undefined,
+        userAgent: request.headers.get('user-agent') || undefined,
+      });
+    }
 
     // Return file
     return new NextResponse(buffer, {

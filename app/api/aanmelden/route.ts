@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { sendConfirmationEmail } from '@/lib/email';
 import { checkRateLimit, getRemainingTime } from '@/lib/rate-limit';
 import { validateDutchPhoneNumber, sanitizePhoneNumber } from '@/lib/validation';
 import crypto from 'crypto';
+import type { Prisma } from '@prisma/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,15 +45,14 @@ export async function POST(request: NextRequest) {
     // Sanitize phone number for storage
     const sanitizedPhone = sanitizePhoneNumber(telefoon);
 
-    // Check rate limit by IP and email
-    const ipLimitOk = checkRateLimit(`ip:${ip}`, 10, 3600000); // 10 per hour per IP
-    const emailLimitOk = checkRateLimit(`email:${email}`, 5, 3600000); // 5 per hour per email
-    
-    if (!ipLimitOk || !emailLimitOk) {
-      const remainingMinutes = Math.max(
-        getRemainingTime(`ip:${ip}`),
-        getRemainingTime(`email:${email}`)
-      );
+    // Check rate limit by IP and email (async)
+    const ipLimit = await checkRateLimit(`ip:${ip}`, 10, 3600000); // 10 per hour per IP
+    const emailLimit = await checkRateLimit(`email:${email}`, 5, 3600000); // 5 per hour per email
+
+    if (!ipLimit.success || !emailLimit.success) {
+      const resetTime = ipLimit.reset || emailLimit.reset || Date.now();
+      const remainingMinutes = Math.ceil((resetTime - Date.now()) / 60000);
+
       return NextResponse.json(
         { message: `Te veel aanmeldpogingen. Probeer het over ${remainingMinutes} minuten opnieuw.` },
         { status: 429 }
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
     const token = crypto.randomBytes(32).toString('hex');
 
     // Use transaction to prevent race conditions
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Check if task exists and has space within transaction
       const taak = await tx.taak.findUnique({
         where: { id: taakId },
@@ -133,18 +134,26 @@ export async function POST(request: NextRequest) {
     } catch (emailError: any) {
       console.error('Email send error:', {
         message: emailError.message,
-        stack: emailError.stack,
-        error: emailError,
+        statusCode: emailError.statusCode,
+        // Don't log stack traces or full error objects in production
+        ...(process.env.NODE_ENV === 'development' && { stack: emailError.stack })
       });
       // Don't fail the registration if email fails
     }
+
+    // Revalidate homepage to update task availability
+    revalidatePath('/');
 
     return NextResponse.json({
       success: true,
       message: 'Aanmelding succesvol',
     });
   } catch (error: any) {
-    console.error('Registration error:', error);
+    console.error('Registration error:', {
+      message: error.message,
+      // Don't log stack traces or full error objects in production
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
     
     // Handle specific error cases
     if (error.message === 'Taak niet gevonden') {
