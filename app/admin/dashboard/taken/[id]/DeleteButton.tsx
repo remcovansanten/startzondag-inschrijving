@@ -46,7 +46,7 @@ export default function DeleteButton({ taakId, taakNaam, aanmeldingenCount }: De
         <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
           <h3 className="text-lg font-semibold mb-4">Taak verwijderen?</h3>
           <p className="text-gray-600 mb-6">
-            Weet je zeker dat je de taak "{taakNaam}" wilt verwijderen?
+            Weet je zeker dat je de taak &quot;{taakNaam}&quot; wilt verwijderen?
             {aanmeldingenCount > 0 && (
               <span className="block mt-2 text-red-600 font-medium">
                 Let op: Deze taak heeft {aanmeldingenCount} aanmelding{aanmeldingenCount !== 1 ? 'en' : ''} die eerst verwijderd moeten worden.

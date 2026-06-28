@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { EVENT_NAME } from './event';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,7 +38,7 @@ export async function sendConfirmationEmail(to: string, data: {
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
             <div style="background-color: #b8341f; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
-              <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
+              <p style="margin: 5px 0 0 0; font-size: 14px;">${EVENT_NAME}</p>
             </div>
             
             <div style="padding: 30px;">
@@ -105,7 +106,7 @@ export async function sendCancellationEmail(to: string, data: {
           <div style="background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
             <div style="background-color: #b8341f; color: white; padding: 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px;">Gereformeerde Kerk Ermelo</h1>
-              <p style="margin: 5px 0 0 0; font-size: 14px;">Startzondag 2025</p>
+              <p style="margin: 5px 0 0 0; font-size: 14px;">${EVENT_NAME}</p>
             </div>
             
             <div style="padding: 30px;">

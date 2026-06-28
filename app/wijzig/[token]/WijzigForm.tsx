@@ -181,7 +181,7 @@ export default function WijzigForm({ aanmelding }: WijzigFormProps) {
         ) : (
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
-              Weet je zeker dat je je aanmelding voor "{aanmelding.taak.naam}" wilt annuleren?
+              Weet je zeker dat je je aanmelding voor &quot;{aanmelding.taak.naam}&quot; wilt annuleren?
             </p>
             <div className="flex gap-4">
               <button

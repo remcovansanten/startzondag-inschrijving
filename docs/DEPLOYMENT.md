@@ -2,6 +2,25 @@
 
 This guide covers deploying the Startzondag application to production.
 
+## Local Development with Docker
+
+For local development, you can use Docker to run PostgreSQL:
+
+```bash
+# Start PostgreSQL container
+docker run --name startzondag-postgres \
+  -e POSTGRES_PASSWORD=localdevpassword \
+  -e POSTGRES_DB=startzondag_dev \
+  -e POSTGRES_USER=startzondag \
+  -p 5432:5432 \
+  -d postgres:15-alpine
+
+# Use this DATABASE_URL in your .env.local
+DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
+```
+
+For full local development setup, see [DEVELOPMENT.md](./DEVELOPMENT.md).
+
 ## Deployment Options
 
 ### Option 1: Vercel (Recommended)
@@ -29,6 +48,12 @@ Vercel provides the easiest deployment with automatic HTTPS, global CDN, and sea
    - Configure project settings
 
 3. **Set Environment Variables**
+   
+   ⚠️ **CRITICAL**: When using Vercel Postgres, it creates `POSTGRES_PRISMA_URL` but NOT `DATABASE_URL`.
+   **You MUST manually add DATABASE_URL**:
+   - Copy the value from `POSTGRES_PRISMA_URL`
+   - Create new variable: `DATABASE_URL` with the copied value
+   
    In Vercel dashboard, add:
    ```
    DATABASE_URL=your_postgres_url

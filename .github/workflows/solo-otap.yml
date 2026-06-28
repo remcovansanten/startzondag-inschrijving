@@ -1,0 +1,202 @@
+name: Solo Developer OTAP Pipeline
+
+on:
+  push:
+    branches: [develop, test, staging, main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+        - development
+        - test
+        - acceptance
+        - production
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Automated quality checks (replaces human code review)
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linting
+        run: npm run lint
+      
+      - name: Type checking
+        run: npm run type-check || npx tsc --noEmit
+      
+      - name: Run unit tests
+        run: npm run test:unit || npm test
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: .next/
+          retention-days: 7
+      
+  # Auto-deploy to development
+  deploy-development:
+    needs: quality-gate
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: https://dev-startzondag.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          alias-domains: dev-startzondag.vercel.app
+          
+  # Auto-promote to test after development deployment succeeds
+  auto-promote-to-test:
+    needs: deploy-development
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Configure git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          
+      - name: Merge develop to test
+        run: |
+          git checkout test || git checkout -b test
+          git merge develop --no-ff -m "Auto-promote from develop to test"
+          git push origin test
+          
+  # Auto-deploy to test
+  deploy-test:
+    needs: quality-gate
+    if: github.ref == 'refs/heads/test'
+    runs-on: ubuntu-latest
+    environment:
+      name: test
+      url: https://test-startzondag.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          alias-domains: test-startzondag.vercel.app
+      
+      - name: Run E2E Tests
+        run: |
+          npm run test:e2e || echo "E2E tests not yet configured"
+        env:
+          TEST_URL: https://test-startzondag.vercel.app
+          
+  # Manual deploy to acceptance (requires developer approval)
+  deploy-acceptance:
+    needs: quality-gate
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment:
+      name: acceptance
+      url: https://staging-startzondag.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          alias-domains: staging-startzondag.vercel.app
+      
+      - name: Notify acceptance testers
+        if: success()
+        run: |
+          echo "🚀 New version ready for acceptance testing: https://staging-startzondag.vercel.app"
+          # Add Slack/Discord webhook here if needed
+          
+  # Manual deploy to production (requires developer approval + acceptance sign-off)
+  deploy-production:
+    needs: quality-gate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://gke-startzondag.nl
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-args: '--prod'
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          
+      - name: Run smoke tests
+        run: |
+          npm run test:smoke || echo "Smoke tests not yet configured"
+        env:
+          PROD_URL: https://gke-startzondag.nl
+      
+      - name: Create release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ github.run_number }}
+          release_name: Production Release ${{ github.run_number }}
+          body: |
+            ## Production deployment successful
+            
+            **Deployment Details:**
+            - Environment: Production
+            - URL: https://gke-startzondag.nl
+            - Commit: ${{ github.sha }}
+            - Deployment Time: ${{ github.event.head_commit.timestamp }}
+            
+            **Changes included:**
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false

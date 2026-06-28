@@ -29,7 +29,12 @@ yarn-error.log*
 .env
 .env*.local
 .env.production.local
+# per-environment files carry credentials → keep out of git (use 1Password / Vercel env vars)
+.env.development
+.env.acceptance
+.env.production
 !.env.example
+!.env.local.example
 !.env.test
 
 # vercel
@@ -45,3 +50,7 @@ next-env.d.ts
 
 # generated
 /generated/prisma
+
+# Sensitive files - NEVER commit these
+GITHUB_SECRETS_SETUP.md
+scripts/add-github-secrets.sh

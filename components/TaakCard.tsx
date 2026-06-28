@@ -23,7 +23,7 @@ export default function TaakCard({ taak }: TaakCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
       {taak.categorie && (
-        <div className="text-sm text-primary font-semibold mb-2" role="heading" aria-level="4">{taak.categorie}</div>
+        <div className="text-sm text-primary font-semibold mb-2" role="heading" aria-level={4}>{taak.categorie}</div>
       )}
       
       <h3 className="text-xl font-semibold mb-2 text-text-dark">{taak.naam}</h3>

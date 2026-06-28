@@ -1,0 +1,9 @@
+# Run tests
+npm test
+
+# Optional: AI code review reminder
+echo ""
+echo "🤖 Consider asking Claude to review your changes before committing:"
+echo "📝 git diff --cached | pbcopy  # Copy changes to clipboard (macOS)"
+echo "🧠 Then ask Claude: 'Please review this Git diff for potential issues'"
+echo ""

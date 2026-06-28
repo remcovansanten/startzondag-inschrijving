@@ -5,41 +5,108 @@ This guide covers the development setup and workflow for the Startzondag applica
 ## Prerequisites
 
 - Node.js 18.x or higher
-- PostgreSQL (for production-like development)
+- Docker (recommended) OR PostgreSQL installed locally
 - Git
 - A code editor (VS Code recommended)
+
+## Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://gitlab.com/remcovansanten/startzondag-inschrijving.git
+cd startzondag-inschrijving
+
+# 2. Install dependencies
+npm install
+
+# 3. Start PostgreSQL with Docker
+docker run --name startzondag-postgres \
+  -e POSTGRES_PASSWORD=localdevpassword \
+  -e POSTGRES_DB=startzondag_dev \
+  -e POSTGRES_USER=startzondag \
+  -p 5432:5432 \
+  -d postgres:15-alpine
+
+# 4. Create .env.local (see Environment Configuration below)
+
+# 5. Push database schema
+export DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
+npx prisma db push
+
+# 6. Seed database
+npm run seed
+
+# 7. Start development server
+npm run dev
+```
 
 ## Local Development Setup
 
 ### 1. Database Setup
 
-You have two options for local development:
+For local development, you have several options for PostgreSQL:
 
-#### Option A: SQLite (Simple)
+#### Option 1: Docker PostgreSQL (Recommended)
 ```bash
-# Use the default SQLite configuration in .env.local
-DATABASE_URL="file:./dev.db"
+# Start PostgreSQL container
+docker run --name startzondag-postgres \
+  -e POSTGRES_PASSWORD=localdevpassword \
+  -e POSTGRES_DB=startzondag_dev \
+  -e POSTGRES_USER=startzondag \
+  -p 5432:5432 \
+  -d postgres:15-alpine
+
+# Database URL for .env.local
+DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
 ```
 
-#### Option B: PostgreSQL (Production-like)
+#### Option 2: Local PostgreSQL Installation
 ```bash
-# Install PostgreSQL locally
-# Create a database
+# macOS with Homebrew
+brew install postgresql@15
+brew services start postgresql@15
+
+# Create database
 createdb startzondag_dev
 
-# Update .env.local
+# Database URL for .env.local
 DATABASE_URL="postgresql://user:password@localhost:5432/startzondag_dev"
+```
+
+#### Managing Docker PostgreSQL
+```bash
+# Stop the database
+docker stop startzondag-postgres
+
+# Start it again
+docker start startzondag-postgres
+
+# Remove it completely
+docker rm -f startzondag-postgres
+
+# View logs
+docker logs startzondag-postgres
 ```
 
 ### 2. Environment Configuration
 
-```bash
-# Copy example environment
-cp .env.example .env.local
+Create a `.env.local` file with the following:
 
-# Edit .env.local with your settings
-# Important: Generate a new JWT_SECRET for security
-openssl rand -base64 32
+```bash
+# Local Development Database (using Docker)
+DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
+
+# Admin Credentials
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="your-secure-password"
+
+# Security (generate a new secret)
+JWT_SECRET="$(openssl rand -base64 32)"
+
+# Email Service (optional for local dev)
+RESEND_API_KEY="your_resend_api_key"
+EMAIL_FROM="noreply@yourdomain.nl"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 ```
 
 ### 3. Install Dependencies
@@ -52,10 +119,15 @@ npm install
 
 ```bash
 # Push schema to database
+# Note: You need to export DATABASE_URL or use dotenv-cli
+export DATABASE_URL="postgresql://startzondag:localdevpassword@localhost:5432/startzondag_dev"
 npx prisma db push
 
 # Seed with test data
 npm run seed
+
+# Alternative: Use dotenv-cli (if installed)
+npx dotenv -e .env.local -- npx prisma db push
 ```
 
 ### 5. Start Development Server
