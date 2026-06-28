@@ -1,3 +1,38 @@
+// Maximale lengtes per veld (voorkomt opslag-/DoS-misbruik en kapotte e-mails).
+export const FIELD_LIMITS = { naam: 100, email: 254, telefoon: 30, opmerking: 1000 } as const;
+
+export function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= FIELD_LIMITS.email;
+}
+
+export interface RegistrationInput {
+  naam?: unknown;
+  email?: unknown;
+  telefoon?: unknown;
+  opmerking?: unknown;
+}
+
+export interface RegistrationResult {
+  error?: string;
+  data?: { naam: string; email: string; telefoon: string; opmerking: string | null };
+}
+
+// Gedeelde validatie + sanitisatie voor aanmelden én wijzigen.
+export function validateRegistration(input: RegistrationInput): RegistrationResult {
+  const naam = typeof input.naam === 'string' ? input.naam.trim() : '';
+  const email = typeof input.email === 'string' ? input.email.trim() : '';
+  const telefoon = typeof input.telefoon === 'string' ? input.telefoon.trim() : '';
+  const opmerking = typeof input.opmerking === 'string' ? input.opmerking.trim() : '';
+
+  if (!naam || !email || !telefoon) return { error: 'Naam, e-mail en telefoon zijn verplicht' };
+  if (naam.length > FIELD_LIMITS.naam) return { error: 'Naam is te lang' };
+  if (!validateEmail(email)) return { error: 'Ongeldig e-mailadres' };
+  if (!validateDutchPhoneNumber(telefoon)) return { error: 'Ongeldig telefoonnummer' };
+  if (opmerking.length > FIELD_LIMITS.opmerking) return { error: 'Opmerking is te lang' };
+
+  return { data: { naam, email, telefoon, opmerking: opmerking || null } };
+}
+
 // Dutch phone number validation
 export function validateDutchPhoneNumber(phone: string): boolean {
   // Remove all non-numeric characters except +

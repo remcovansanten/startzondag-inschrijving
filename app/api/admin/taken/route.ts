@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { requireAdmin } from '@/lib/api-auth';
 
 export async function POST(request: NextRequest) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   try {
     const body = await request.json();
     const { naam, beschrijving, maxAantal, categorie } = body;
 
-    if (!naam || !maxAantal) {
+    const aantal = parseInt(maxAantal, 10);
+    if (!naam || typeof naam !== 'string' || naam.length > 200 || !Number.isInteger(aantal) || aantal < 1 || aantal > 10000) {
       return NextResponse.json(
-        { message: 'Naam en maximum aantal zijn verplicht' },
+        { message: 'Naam en een geldig maximum aantal (1–10000) zijn verplicht' },
         { status: 400 }
       );
     }
@@ -17,7 +21,7 @@ export async function POST(request: NextRequest) {
       data: {
         naam,
         beschrijving: beschrijving || null,
-        maxAantal: parseInt(maxAantal),
+        maxAantal: aantal,
         categorie: categorie || null,
       },
     });
