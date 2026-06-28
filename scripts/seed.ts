@@ -1,12 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
-    }
-  }
-});
+import { prisma } from '../lib/db';
 
 // Admins loggen in via magic link (allowlist ADMIN_EMAILS) — er worden geen
 // admin-wachtwoorden meer geseed.
