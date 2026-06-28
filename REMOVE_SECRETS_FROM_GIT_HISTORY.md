@@ -3,9 +3,9 @@
 ## CRITICAL: Actions Required Immediately
 
 ### 1. Revoke All Exposed Credentials NOW
-- **Resend API Key**: Go to https://resend.com/api-keys and revoke `re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ`
+- **Resend API Key**: Go to https://resend.com/api-keys and revoke `<REDACTED-resend-key-rotated>`
 - **Database**: Change the database password for the exposed connection string
-- **Admin Password**: Change the production admin password from `usYfk*nJy3zfDiW__WU-`
+- **Admin Password**: Change the production admin password from `<REDACTED-admin-password-obsolete>`
 - **JWT Secrets**: Generate new JWT secrets for all environments
 
 ### 2. Remove Secrets from Git History
@@ -21,10 +21,10 @@ git clone --mirror https://github.com/remcovansanten/startzondag-inschrijving.gi
 wget https://repo1.maven.org/maven2/com/madgag/bfg/1.14.0/bfg-1.14.0.jar
 
 # 3. Create a file with all the secrets to remove
-echo 're_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ' > passwords.txt
-echo 'usYfk*nJy3zfDiW__WU-' >> passwords.txt
+echo '<REDACTED-resend-key-rotated>' > passwords.txt
+echo '<REDACTED-admin-password-obsolete>' >> passwords.txt
 echo 'IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0=' >> passwords.txt
-echo 'sk_gQM2SpF0LwfKZ77AS87sy' >> passwords.txt
+echo '<REDACTED-rotate-in-prisma-console>' >> passwords.txt
 echo '19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48' >> passwords.txt
 
 # 4. Run BFG to remove secrets

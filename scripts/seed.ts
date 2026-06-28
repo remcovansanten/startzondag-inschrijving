@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient({
   datasources: {
@@ -9,21 +8,9 @@ const prisma = new PrismaClient({
   }
 });
 
+// Admins loggen in via magic link (allowlist ADMIN_EMAILS) — er worden geen
+// admin-wachtwoorden meer geseed.
 async function main() {
-  // Create admin user
-  const adminPassword = process.env.ADMIN_PASSWORD || 'usYfk*nJy3zfDiW__WU-';
-  const hashedPassword = await bcrypt.hash(adminPassword, 10);
-
-  await prisma.admin.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: {
-      username: 'admin',
-      passwordHash: hashedPassword,
-    },
-  });
-
-  console.log('Admin user created/updated');
 
   // Create some sample tasks
   const sampleTasks = [
