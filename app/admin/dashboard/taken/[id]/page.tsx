@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
+import { formatDateTimeNL } from '@/lib/datetime';
 import DeleteButton from './DeleteButton';
 
 export const dynamic = 'force-dynamic';
@@ -117,7 +118,7 @@ export default async function TaakDetailPage({ params }: { params: Promise<{ id:
                       {aanmelding.telefoon}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(aanmelding.createdAt).toLocaleDateString('nl-NL')}
+                      {formatDateTimeNL(aanmelding.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       {aanmelding.opmerking || '-'}

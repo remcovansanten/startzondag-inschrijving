@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { formatDateTimeNL } from '@/lib/datetime';
 import ExcelJS from 'exceljs';
 
 export async function GET() {
@@ -74,7 +75,7 @@ export async function GET() {
           email: aanmelding.email,
           telefoon: aanmelding.telefoon,
           opmerking: aanmelding.opmerking || '',
-          aangemeldOp: new Date(aanmelding.createdAt).toLocaleDateString('nl-NL'),
+          aangemeldOp: formatDateTimeNL(aanmelding.createdAt),
           bevestigd: aanmelding.bevestigd ? 'Ja' : 'Nee'
         });
       });
@@ -161,13 +162,7 @@ export async function GET() {
           taskSheet.getCell(`B${rowNum}`).value = aanmelding.email;
           taskSheet.getCell(`C${rowNum}`).value = aanmelding.telefoon;
           taskSheet.getCell(`D${rowNum}`).value = aanmelding.opmerking || '';
-          taskSheet.getCell(`E${rowNum}`).value = new Date(aanmelding.createdAt).toLocaleDateString('nl-NL', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
+          taskSheet.getCell(`E${rowNum}`).value = formatDateTimeNL(aanmelding.createdAt);
         });
       } else {
         taskSheet.getCell(`A${startRow + 1}`).value = 'Nog geen aanmeldingen';
