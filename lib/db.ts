@@ -1,30 +1,31 @@
-import { PrismaClient } from '@prisma/client'
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaClient } from '@/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 declare global {
-  var prisma: PrismaClient | undefined
+  var prisma: PrismaClient | undefined;
 }
 
-const prismaClientSingleton = () => {
-  const client = new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  })
-  
-  // Only use Accelerate extension if we have the Accelerate URL
-  if (process.env.DATABASE_URL?.includes('prisma.io')) {
-    return client.$extends(withAccelerate()) as unknown as PrismaClient
+function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error('DATABASE_URL ontbreekt. Stel deze in via de environment — er is geen fallback.');
   }
-  
-  return client
+  // Prisma 7 driver adapter: directe Postgres-verbinding (lokaal localhost,
+  // productie Prisma Postgres via db.prisma.io). Uniform, geen Accelerate-tak.
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
 }
 
-export const prisma = globalThis.prisma ?? prismaClientSingleton()
+export const prisma = globalThis.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
-  globalThis.prisma = prisma
+  globalThis.prisma = prisma;
 }
 
 // Ensure proper connection handling for serverless
 export async function disconnect() {
-  await prisma.$disconnect()
+  await prisma.$disconnect();
 }

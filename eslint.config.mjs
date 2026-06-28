@@ -4,7 +4,7 @@ import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 // the removed `next lint` command. Mirrors the original ruleset:
 // `next/core-web-vitals` only (not the stricter `next/typescript`).
 const config = [
-  { ignores: ['.next/**', 'coverage/**', 'node_modules/**', 'next-env.d.ts'] },
+  { ignores: ['.next/**', 'coverage/**', 'node_modules/**', 'generated/**', 'next-env.d.ts'] },
   ...nextCoreWebVitals,
   {
     rules: {
