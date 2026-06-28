@@ -28,7 +28,7 @@ Add the following environment variables for each environment:
 | `JWT_SECRET` | JWT signing secret | `dev-jwt-secret-zX9mK3nP5qR8tV2wY6bC4fH7jL0` | `IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0=` |
 | `RESEND_API_KEY` | Email API key | `re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ` | `re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ` |
 | `EMAIL_FROM` | Sender email address | `Startzondag GKE <noreply@gke-startzondag.nl>` | `Startzondag GKE <noreply@gke-startzondag.nl>` |
-| `NEXT_PUBLIC_SITE_URL` | Public site URL | Automatic from Vercel | `https://startzondag.gk-ermelo.nl` |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL | Automatic from Vercel | `https://gke-startzondag.nl` |
 | `ADMIN_USERNAME` | Admin username | `admin` | `admin` |
 | `ADMIN_PASSWORD` | Admin password | `dev-password-123` | `usYfk*nJy3zfDiW__WU-` |
 

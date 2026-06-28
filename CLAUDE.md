@@ -69,7 +69,7 @@ In-memory `Map` keyed by identifier (e.g. IP). This is per-instance and resets o
 
 Hosted on **Vercel** (region `fra1`), config in `vercel.json` (admin API routes get 60s timeout, others 30s; security headers set there). Deploys are GitLab/GitHub-triggered.
 
-**OTAP workflow** (see `docs/OTAP-WORKFLOW.md`): branches map to environments — `develop` (O), `test` (T), `staging` (A/acceptance), `main` (P/production → `startzondag.gk-ermelo.nl`). There are matching `.env.<environment>` files. **`main` is production** — treat it accordingly.
+**OTAP workflow** (see `docs/OTAP-WORKFLOW.md`): branches map to environments — `develop` (O), `test` (T), `staging` (A/acceptance), `main` (P/production → `gke-startzondag.nl`). There are matching `.env.<environment>` files. **`main` is production** — treat it accordingly.
 
 ## Conventions
 

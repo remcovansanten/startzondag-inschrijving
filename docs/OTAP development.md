@@ -19,7 +19,7 @@ This document outlines the OTAP (Ontwikkeling, Test, Acceptatie, Productie) impl
 | **Ontwikkeling (O)** | Active development | `develop` | `https://dev-startzondag.vercel.app` | PostgreSQL Dev |
 | **Test (T)** | Automated testing & QA | `test` | `https://test-startzondag.vercel.app` | PostgreSQL Test |
 | **Acceptatie (A)** | User acceptance testing | `staging` | `https://staging-startzondag.vercel.app` | PostgreSQL Staging |
-| **Productie (P)** | Live application | `main` | `https://startzondag.gk-ermelo.nl` | PostgreSQL Prod |
+| **Productie (P)** | Live application | `main` | `https://gke-startzondag.nl` | PostgreSQL Prod |
 
 ### 2.2 Infrastructure Requirements
 
@@ -99,11 +99,11 @@ main (Production)
 | Variable | Development | Test | Acceptance | Production |
 |----------|-------------|------|------------|------------|
 | `DATABASE_URL` | `postgres://dev_db` | `postgres://test_db` | `postgres://staging_db` | `postgres://prod_db` |
-| `NEXT_PUBLIC_SITE_URL` | `https://dev-startzondag.vercel.app` | `https://test-startzondag.vercel.app` | `https://staging-startzondag.vercel.app` | `https://startzondag.gk-ermelo.nl` |
+| `NEXT_PUBLIC_SITE_URL` | `https://dev-startzondag.vercel.app` | `https://test-startzondag.vercel.app` | `https://staging-startzondag.vercel.app` | `https://gke-startzondag.nl` |
 | `JWT_SECRET` | `dev-secret-key` | `test-secret-key` | `staging-secret-key` | `prod-secret-key` |
 | `ADMIN_PASSWORD` | `dev-admin-123` | `test-admin-456` | `staging-admin-789` | `secure-prod-password` |
 | `RESEND_API_KEY` | `test_key` | `test_key` | `live_key_limited` | `live_key_full` |
-| `EMAIL_FROM` | `dev@test.local` | `test@test.local` | `staging@gk-ermelo.nl` | `noreply@gk-ermelo.nl` |
+| `EMAIL_FROM` | `dev@test.local` | `test@test.local` | `staging@gke-startzondag.nl` | `noreply@gke-startzondag.nl` |
 | `NODE_ENV` | `development` | `development` | `production` | `production` |
 
 ### 4.2 Database Configuration
@@ -256,7 +256,7 @@ jobs:
         run: |
           curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
           -H 'Content-type: application/json' \
-          --data '{"text":"✅ Production deployment successful: https://startzondag.gk-ermelo.nl"}'
+          --data '{"text":"✅ Production deployment successful: https://gke-startzondag.nl"}'
 ```
 
 ### 5.2 AI-Assisted Code Review Process
@@ -399,7 +399,7 @@ test('volunteer can register for task', async ({ page }) => {
 
 #### Production Deployment
 - **Trigger**: Manual promotion with approval workflow
-- **Domain**: Custom domain `startzondag.gk-ermelo.nl`
+- **Domain**: Custom domain `gke-startzondag.nl`
 - **Database**: High-availability production instance
 - **Features**: Full functionality, monitoring, alerting, backups
 

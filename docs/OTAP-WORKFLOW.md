@@ -13,7 +13,7 @@ The OTAP workflow is designed for a solo developer with AI assistance, providing
 | **Development (O)** | `develop` | `https://dev-startzondag.vercel.app` | Active development |
 | **Test (T)** | `test` | `https://test-startzondag.vercel.app` | Automated testing |
 | **Acceptance (A)** | `staging` | `https://staging-startzondag.vercel.app` | User acceptance testing |
-| **Production (P)** | `main` | `https://startzondag.gk-ermelo.nl` | Live application |
+| **Production (P)** | `main` | `https://gke-startzondag.nl` | Live application |
 
 ## Quick Start
 

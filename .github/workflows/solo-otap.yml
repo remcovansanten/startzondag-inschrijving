@@ -161,7 +161,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://startzondag.gk-ermelo.nl
+      url: https://gke-startzondag.nl
     steps:
       - uses: actions/checkout@v4
       
@@ -177,7 +177,7 @@ jobs:
         run: |
           npm run test:smoke || echo "Smoke tests not yet configured"
         env:
-          PROD_URL: https://startzondag.gk-ermelo.nl
+          PROD_URL: https://gke-startzondag.nl
       
       - name: Create release
         if: success()
@@ -192,7 +192,7 @@ jobs:
             
             **Deployment Details:**
             - Environment: Production
-            - URL: https://startzondag.gk-ermelo.nl
+            - URL: https://gke-startzondag.nl
             - Commit: ${{ github.sha }}
             - Deployment Time: ${{ github.event.head_commit.timestamp }}
             
