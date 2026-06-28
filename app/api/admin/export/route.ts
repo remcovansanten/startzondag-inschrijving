@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { requireAdmin } from '@/lib/api-auth';
 import ExcelJS from 'exceljs';
 
+// Neutraliseer CSV/Excel formula-injection: cellen die met =,+,-,@,tab of CR
+// beginnen worden voorzien van een voorafgaand apostrof, zodat de spreadsheet
+// ze als tekst behandelt i.p.v. als formule.
+function safeCell(value: string | null | undefined): string {
+  const s = value == null ? '' : String(value);
+  return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+}
+
 export async function GET() {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   try {
     const taken = await prisma.taak.findMany({
       include: {
@@ -34,9 +45,9 @@ export async function GET() {
 
     taken.forEach(taak => {
       overviewSheet.addRow({
-        taak: taak.naam,
-        categorie: taak.categorie || '',
-        beschrijving: taak.beschrijving || '',
+        taak: safeCell(taak.naam),
+        categorie: safeCell(taak.categorie),
+        beschrijving: safeCell(taak.beschrijving),
         maxAantal: taak.maxAantal,
         aanmeldingen: taak.aanmeldingen.length,
         vrijePlekken: taak.maxAantal - taak.aanmeldingen.length,
@@ -68,12 +79,12 @@ export async function GET() {
     taken.forEach(taak => {
       taak.aanmeldingen.forEach(aanmelding => {
         allSheet.addRow({
-          taak: taak.naam,
-          categorie: taak.categorie || '',
-          naam: aanmelding.naam,
-          email: aanmelding.email,
-          telefoon: aanmelding.telefoon,
-          opmerking: aanmelding.opmerking || '',
+          taak: safeCell(taak.naam),
+          categorie: safeCell(taak.categorie),
+          naam: safeCell(aanmelding.naam),
+          email: safeCell(aanmelding.email),
+          telefoon: safeCell(aanmelding.telefoon),
+          opmerking: safeCell(aanmelding.opmerking),
           aangemeldOp: new Date(aanmelding.createdAt).toLocaleDateString('nl-NL'),
           bevestigd: aanmelding.bevestigd ? 'Ja' : 'Nee'
         });
@@ -99,10 +110,10 @@ export async function GET() {
     taken.forEach(taak => {
       taak.aanmeldingen.forEach(aanmelding => {
         contactSheet.addRow({
-          taak: taak.naam,
-          naam: aanmelding.naam,
-          email: aanmelding.email,
-          telefoon: aanmelding.telefoon
+          taak: safeCell(taak.naam),
+          naam: safeCell(aanmelding.naam),
+          email: safeCell(aanmelding.email),
+          telefoon: safeCell(aanmelding.telefoon)
         });
       });
     });
@@ -157,10 +168,10 @@ export async function GET() {
       if (taak.aanmeldingen.length > 0) {
         taak.aanmeldingen.forEach((aanmelding, index) => {
           const rowNum = startRow + index + 1;
-          taskSheet.getCell(`A${rowNum}`).value = aanmelding.naam;
-          taskSheet.getCell(`B${rowNum}`).value = aanmelding.email;
-          taskSheet.getCell(`C${rowNum}`).value = aanmelding.telefoon;
-          taskSheet.getCell(`D${rowNum}`).value = aanmelding.opmerking || '';
+          taskSheet.getCell(`A${rowNum}`).value = safeCell(aanmelding.naam);
+          taskSheet.getCell(`B${rowNum}`).value = safeCell(aanmelding.email);
+          taskSheet.getCell(`C${rowNum}`).value = safeCell(aanmelding.telefoon);
+          taskSheet.getCell(`D${rowNum}`).value = safeCell(aanmelding.opmerking);
           taskSheet.getCell(`E${rowNum}`).value = new Date(aanmelding.createdAt).toLocaleDateString('nl-NL', {
             day: '2-digit',
             month: '2-digit',

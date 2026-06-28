@@ -44,3 +44,17 @@ model Admin {
   passwordHash  String
   createdAt     DateTime @default(now())
 }
+
+// Eenmalige inlog-tokens voor magic-link login. Alleen de hash van het token
+// wordt opgeslagen, zodat een DB-lek geen geldige tokens prijsgeeft.
+model LoginToken {
+  id         String    @id @default(cuid())
+  email      String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}

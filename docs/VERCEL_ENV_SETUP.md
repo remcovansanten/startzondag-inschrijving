@@ -24,13 +24,13 @@ Add the following environment variables for each environment:
 
 | Variable | Description | Preview Value | Production Value |
 |----------|-------------|---------------|------------------|
-| `DATABASE_URL` | PostgreSQL connection string | Use dev/test database | `postgres://19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48:sk_gQM2SpF0LwfKZ77AS87sy@db.prisma.io:5432/?sslmode=require` |
+| `DATABASE_URL` | PostgreSQL connection string | Use dev/test database | `postgres://19a91092569789773f3a33c429af4ec70eee7a6cbf162e6e2d7a0cfb28ea7c48:<REDACTED-rotate-in-prisma-console>@db.prisma.io:5432/?sslmode=require` |
 | `JWT_SECRET` | JWT signing secret | `dev-jwt-secret-zX9mK3nP5qR8tV2wY6bC4fH7jL0` | `IGoXeYj3rpHFRIFavJD6xX4xjltc028fbhCwGzI7dd0=` |
-| `RESEND_API_KEY` | Email API key | `re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ` | `re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ` |
+| `RESEND_API_KEY` | Email API key | `<REDACTED-resend-key-rotated>` | `<REDACTED-resend-key-rotated>` |
 | `EMAIL_FROM` | Sender email address | `Startzondag GKE <noreply@gke-startzondag.nl>` | `Startzondag GKE <noreply@gke-startzondag.nl>` |
 | `NEXT_PUBLIC_SITE_URL` | Public site URL | Automatic from Vercel | `https://gke-startzondag.nl` |
 | `ADMIN_USERNAME` | Admin username | `admin` | `admin` |
-| `ADMIN_PASSWORD` | Admin password | `dev-password-123` | `usYfk*nJy3zfDiW__WU-` |
+| `ADMIN_PASSWORD` | Admin password | `dev-password-123` | `<REDACTED-admin-password-obsolete>` |
 
 ### How to Add Variables
 

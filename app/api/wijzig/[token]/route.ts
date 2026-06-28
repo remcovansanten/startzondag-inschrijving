@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { sendCancellationEmail } from '@/lib/email';
+import { validateRegistration } from '@/lib/validation';
 
 export async function GET(
   request: NextRequest,
@@ -39,24 +40,15 @@ export async function PUT(
   try {
     const { token } = await params;
     const body = await request.json();
-    const { naam, email, telefoon, opmerking } = body;
 
-    // Validate required fields
-    if (!naam || !email || !telefoon) {
-      return NextResponse.json(
-        { message: 'Alle verplichte velden moeten worden ingevuld' },
-        { status: 400 }
-      );
+    const validated = validateRegistration(body);
+    if (validated.error || !validated.data) {
+      return NextResponse.json({ message: validated.error }, { status: 400 });
     }
 
     const aanmelding = await prisma.aanmelding.update({
       where: { token },
-      data: {
-        naam,
-        email,
-        telefoon,
-        opmerking: opmerking || null,
-      },
+      data: validated.data,
     });
 
     return NextResponse.json({
