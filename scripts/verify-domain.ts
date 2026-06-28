@@ -1,6 +1,10 @@
 import { Resend } from 'resend';
 
-const resend = new Resend('re_3LgzhThz_LiR6AXfzA552y2HETVV3XDXZ');
+const apiKey = process.env.RESEND_API_KEY;
+if (!apiKey) {
+  throw new Error('RESEND_API_KEY ontbreekt — zet deze in de environment. Geen hardcoded fallback.');
+}
+const resend = new Resend(apiKey);
 
 async function verifyDomain() {
   try {

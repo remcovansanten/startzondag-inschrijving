@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import TaakCard from '@/components/TaakCard';
 import { prisma } from '@/lib/db';
+import { EVENT_NAME } from '@/lib/event';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,7 +42,7 @@ export default async function Home() {
             <img src="/logo-gke.png" alt="Gereformeerde Kerk Ermelo" className="h-16 w-auto" />
             <div className="text-center">
               <h1 className="text-2xl font-semibold text-text-dark">Gereformeerde Kerk Ermelo</h1>
-              <p className="text-sm text-text-muted">Startzondag 2025</p>
+              <p className="text-sm text-text-muted">{EVENT_NAME}</p>
             </div>
           </div>
         </div>

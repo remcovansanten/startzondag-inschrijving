@@ -1,15 +1,23 @@
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-min-32-chars';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      'JWT_SECRET ontbreekt of is te kort (min. 32 tekens). Stel deze in via de environment — er is geen onveilige fallback.'
+    );
+  }
+  return secret;
+}
 
 export async function createToken(payload: any) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: '4h' });
 }
 
 export async function verifyToken(token: string) {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch {
     return null;
   }

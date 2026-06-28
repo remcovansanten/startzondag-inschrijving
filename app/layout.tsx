@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { EVENT_NAME, ORGANISATIE } from "@/lib/event";
 
 export const metadata: Metadata = {
-  title: "Startzondag 2025 - Gereformeerde Kerk Ermelo",
+  title: `${EVENT_NAME} - ${ORGANISATIE}`,
   description: "Meld je aan als vrijwilliger voor de Startzondag van de Gereformeerde Kerk Ermelo",
 };
 
