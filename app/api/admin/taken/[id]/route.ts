@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireAdmin } from '@/lib/api-auth';
+import { getSession } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 import { ACTIEF_FILTER } from '@/lib/aanmelding';
+
+const str = (v: unknown, max: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 
 // GET a single task
 export async function GET(
@@ -49,7 +53,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { naam, beschrijving, maxAantal, categorie } = body;
+    const { naam, beschrijving, maxAantal, categorie, tijd, locatie } = body;
 
     if (!naam || !maxAantal) {
       return NextResponse.json(
@@ -90,7 +94,17 @@ export async function PUT(
         beschrijving: beschrijving || null,
         maxAantal: parseInt(maxAantal),
         categorie: categorie || null,
+        tijd: str(tijd, 100),
+        locatie: str(locatie, 200),
       },
+    });
+
+    await logAudit({
+      actorEmail: (await getSession())?.email ?? 'onbekend',
+      action: 'taak.bewerkt',
+      entityType: 'Taak',
+      entityId: id,
+      details: updatedTaak.naam,
     });
 
     return NextResponse.json({
@@ -143,6 +157,14 @@ export async function DELETE(
     // Delete the task
     await prisma.taak.delete({
       where: { id }
+    });
+
+    await logAudit({
+      actorEmail: (await getSession())?.email ?? 'onbekend',
+      action: 'taak.verwijderd',
+      entityType: 'Taak',
+      entityId: id,
+      details: task.naam,
     });
 
     return NextResponse.json({

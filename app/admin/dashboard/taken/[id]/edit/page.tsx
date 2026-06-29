@@ -16,7 +16,9 @@ export default function EditTaakPage({ params }: { params: Promise<{ id: string 
     naam: '',
     beschrijving: '',
     maxAantal: '',
-    categorie: ''
+    categorie: '',
+    tijd: '',
+    locatie: ''
   });
 
   useEffect(() => {
@@ -33,7 +35,9 @@ export default function EditTaakPage({ params }: { params: Promise<{ id: string 
           naam: task.naam,
           beschrijving: task.beschrijving || '',
           maxAantal: task.maxAantal.toString(),
-          categorie: task.categorie || ''
+          categorie: task.categorie || '',
+          tijd: task.tijd || '',
+          locatie: task.locatie || ''
         });
       } catch (err) {
         setError('Fout bij het laden van de taak');
@@ -165,6 +169,33 @@ export default function EditTaakPage({ params }: { params: Promise<{ id: string 
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="tijd" className="block text-sm font-medium text-gray-700 mb-1">Tijd</label>
+                <input
+                  type="text"
+                  id="tijd"
+                  name="tijd"
+                  placeholder="bijv. 09:30 - 12:00"
+                  value={formData.tijd}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label htmlFor="locatie" className="block text-sm font-medium text-gray-700 mb-1">Locatie</label>
+                <input
+                  type="text"
+                  id="locatie"
+                  name="locatie"
+                  placeholder="bijv. Grote zaal"
+                  value={formData.locatie}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
             </div>
 
             {error && (

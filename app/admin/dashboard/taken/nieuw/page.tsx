@@ -13,7 +13,9 @@ export default function NieuweTaakPage() {
     naam: '',
     beschrijving: '',
     maxAantal: '',
-    categorie: ''
+    categorie: '',
+    tijd: '',
+    locatie: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,6 +102,37 @@ export default function NieuweTaakPage() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="tijd" className="block text-sm font-medium text-gray-700 mb-1">
+                  Tijd
+                </label>
+                <input
+                  type="text"
+                  id="tijd"
+                  name="tijd"
+                  placeholder="bijv. 09:30 - 12:00"
+                  value={formData.tijd}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label htmlFor="locatie" className="block text-sm font-medium text-gray-700 mb-1">
+                  Locatie
+                </label>
+                <input
+                  type="text"
+                  id="locatie"
+                  name="locatie"
+                  placeholder="bijv. Grote zaal"
+                  value={formData.locatie}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
             </div>
 
             <div>

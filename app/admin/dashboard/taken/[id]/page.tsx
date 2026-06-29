@@ -83,6 +83,14 @@ export default async function TaakDetailPage({ params }: { params: Promise<{ id:
                 {taak.aanmeldingen.length} / {taak.maxAantal}
               </dd>
             </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Tijd</dt>
+              <dd className="mt-1">{taak.tijd || '-'}</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Locatie</dt>
+              <dd className="mt-1">{taak.locatie || '-'}</dd>
+            </div>
           </dl>
         </div>
 

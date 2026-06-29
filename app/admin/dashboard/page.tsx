@@ -50,14 +50,19 @@ export default async function AdminDashboard() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-text-dark">Admin Dashboard</h1>
-            <form action={handleLogout}>
-              <button
-                type="submit"
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
-              >
-                Uitloggen
-              </button>
-            </form>
+            <div className="flex items-center gap-4">
+              <Link href="/admin/dashboard/audit" className="text-sm text-gray-500 hover:underline">
+                Logboek
+              </Link>
+              <form action={handleLogout}>
+                <button
+                  type="submit"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+                >
+                  Uitloggen
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
