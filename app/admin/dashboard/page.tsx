@@ -91,6 +91,12 @@ export default async function AdminDashboard() {
               <h2 className="text-xl font-semibold text-text-dark">Taken Overzicht</h2>
               <div className="space-x-2">
                 <Link
+                  href="/admin/dashboard/aanmeldingen"
+                  className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition-colors"
+                >
+                  Aanmeldingen
+                </Link>
+                <Link
                   href="/admin/dashboard/taken/nieuw"
                   className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover transition-colors"
                 >
