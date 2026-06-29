@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { sendConfirmationEmail } from '@/lib/email';
+import { sendConfirmationEmail, sendWaitlistEmail } from '@/lib/email';
 import { checkRateLimit, getRemainingTime } from '@/lib/rate-limit';
 import { sanitizePhoneNumber, validateRegistration } from '@/lib/validation';
 import { checkEmailDomain } from '@/lib/email-validate';
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
                 'unknown';
     
     const body = await request.json();
-    const { taakId, website, renderedAt } = body;
+    const { taakId, website, renderedAt, wachtlijst } = body;
 
     if (!taakId || typeof taakId !== 'string') {
       return NextResponse.json(
@@ -79,7 +79,8 @@ export async function POST(request: NextRequest) {
             select: { aanmeldingen: { where: ACTIEF_FILTER } }
           },
           aanmeldingen: {
-            where: { email, status: STATUS.ACTIEF },
+            // Dubbel-detectie: al actief óf al op de wachtlijst voor deze taak.
+            where: { email, status: { in: [STATUS.ACTIEF, STATUS.WACHTLIJST] } },
             select: { id: true }
           }
         }
@@ -89,17 +90,21 @@ export async function POST(request: NextRequest) {
         throw new Error('Taak niet gevonden');
       }
 
-      // Check for duplicate active registration on same task
+      // Check for duplicate registration on same task
       if (taak.aanmeldingen.length > 0) {
         throw new Error('Je bent al aangemeld voor deze taak');
       }
 
-      // Check if task is full (alleen ACTIEVE tellen mee)
-      if (taak._count.aanmeldingen >= taak.maxAantal) {
-        throw new Error('Deze taak is helaas vol');
+      // Vol? Dan wachtlijst (als de gebruiker daarvoor koos), anders weigeren.
+      const isVol = taak._count.aanmeldingen >= taak.maxAantal;
+      let status: string = STATUS.ACTIEF;
+      if (isVol) {
+        if (!wachtlijst) {
+          throw new Error('Deze taak is helaas vol');
+        }
+        status = STATUS.WACHTLIJST;
       }
 
-      // Create registration within transaction
       const aanmelding = await tx.aanmelding.create({
         data: {
           taakId,
@@ -110,33 +115,39 @@ export async function POST(request: NextRequest) {
           token,
           bevestigd: true,
           emailStatus,
+          status,
         },
       });
 
-      return { aanmelding, taak };
+      return { aanmelding, taak, waitlisted: status === STATUS.WACHTLIJST };
     });
 
-    // Send confirmation email
+    // Mail: wachtlijst-bevestiging of normale bevestiging.
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const wijzigLink = `${siteUrl}/wijzig/${token}`;
 
     try {
-      await sendConfirmationEmail(email, {
-        naam,
-        taakNaam: result.taak.naam,
-        telefoon: sanitizedPhone,
-        email,
-        wijzigLink,
-      });
+      if (result.waitlisted) {
+        await sendWaitlistEmail(email, { naam, taakNaam: result.taak.naam, wijzigLink });
+      } else {
+        await sendConfirmationEmail(email, {
+          naam,
+          taakNaam: result.taak.naam,
+          telefoon: sanitizedPhone,
+          email,
+          wijzigLink,
+        });
+      }
     } catch {
-      // Bevestigingsmail mag de aanmelding niet laten falen; geen PII loggen.
+      // Mail mag de aanmelding niet laten falen; geen PII loggen.
       console.error('Bevestigingsmail kon niet verzonden worden');
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Aanmelding succesvol',
-      wijzigToken: token, // voor de bevestigingspagina (zelfde token als in de mail)
+      message: result.waitlisted ? 'Op wachtlijst geplaatst' : 'Aanmelding succesvol',
+      wijzigToken: token,
+      waitlisted: result.waitlisted,
     });
   } catch (error: any) {
     console.error('Registration error:', error?.message);
