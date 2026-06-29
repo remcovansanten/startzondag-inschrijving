@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 
 export async function GET() {
   try {
     const taken = await prisma.taak.findMany({
       include: {
         _count: {
-          select: { aanmeldingen: true }
+          select: { aanmeldingen: { where: ACTIEF_FILTER } }
         }
       },
       orderBy: [

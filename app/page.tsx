@@ -2,6 +2,7 @@ import Link from 'next/link';
 import TaakCard from '@/components/TaakCard';
 import { prisma } from '@/lib/db';
 import { EVENT_NAME } from '@/lib/event';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +10,7 @@ async function getTaken() {
   const taken = await prisma.taak.findMany({
     include: {
       _count: {
-        select: { aanmeldingen: true }
+        select: { aanmeldingen: { where: ACTIEF_FILTER } }
       }
     },
     orderBy: [

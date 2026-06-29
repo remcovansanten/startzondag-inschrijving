@@ -18,6 +18,8 @@ model Taak {
   beschrijving  String?
   maxAantal     Int
   categorie     String?
+  tijd          String?
+  locatie       String?
   aanmeldingen  Aanmelding[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -33,11 +35,31 @@ model Aanmelding {
   opmerking     String?
   token         String   @unique
   bevestigd     Boolean  @default(false)
+  // Slot-status: ACTIEF (telt mee) | GEANNULEERD (soft-delete) | WACHTLIJST (Fase 3)
+  status        String   @default("ACTIEF")
+  // E-mailvaliditeit: ONBEKEND | OK | CONTROLEREN (MX-fail of bounce)
+  emailStatus   String   @default("ONBEKEND")
+  // Interne notitie voor beheerders (ook in Excel), niet zichtbaar voor vrijwilliger
+  adminNotitie  String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([email])
   @@index([token])
+  @@index([status])
+}
+
+// Audit-log van beheeracties (wie deed wat, wanneer).
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorEmail  String
+  action      String
+  entityType  String
+  entityId    String?
+  details     String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 model Admin {

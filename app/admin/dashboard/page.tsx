@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { clearSession } from '@/lib/auth';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -8,11 +9,11 @@ export const dynamic = 'force-dynamic';
 async function getStats() {
   const [takenCount, aanmeldingenCount, taken] = await Promise.all([
     prisma.taak.count(),
-    prisma.aanmelding.count(),
+    prisma.aanmelding.count({ where: ACTIEF_FILTER }),
     prisma.taak.findMany({
       include: {
         _count: {
-          select: { aanmeldingen: true }
+          select: { aanmeldingen: { where: ACTIEF_FILTER } }
         }
       },
       orderBy: { naam: 'asc' }

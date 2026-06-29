@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { sendCancellationEmail } from '@/lib/email';
 import { validateRegistration } from '@/lib/validation';
+import { STATUS } from '@/lib/aanmelding';
 
 export async function GET(
   request: NextRequest,
@@ -85,8 +86,10 @@ export async function DELETE(
       );
     }
 
-    await prisma.aanmelding.delete({
-      where: { token }
+    // Soft-delete: bewaar de rij maar markeer als geannuleerd; de plek komt vrij.
+    await prisma.aanmelding.update({
+      where: { token },
+      data: { status: STATUS.GEANNULEERD },
     });
 
     // Send cancellation email

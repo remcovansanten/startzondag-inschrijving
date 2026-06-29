@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db';
 import { sendConfirmationEmail } from '@/lib/email';
 import { checkRateLimit, getRemainingTime } from '@/lib/rate-limit';
 import { sanitizePhoneNumber, validateRegistration } from '@/lib/validation';
+import { checkEmailDomain } from '@/lib/email-validate';
+import { ACTIEF_FILTER, STATUS } from '@/lib/aanmelding';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
@@ -60,6 +62,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // E-maildomein checken (MX). Geen mailserver -> vlag 'CONTROLEREN'; de plek
+    // blijft (admin matcht handmatig). Buiten de transactie i.v.m. DNS-latency.
+    const emailStatus = await checkEmailDomain(email);
+
     // Generate unique token before transaction
     const token = crypto.randomBytes(32).toString('hex');
 
@@ -70,10 +76,10 @@ export async function POST(request: NextRequest) {
         where: { id: taakId },
         include: {
           _count: {
-            select: { aanmeldingen: true }
+            select: { aanmeldingen: { where: ACTIEF_FILTER } }
           },
           aanmeldingen: {
-            where: { email },
+            where: { email, status: STATUS.ACTIEF },
             select: { id: true }
           }
         }
@@ -83,12 +89,12 @@ export async function POST(request: NextRequest) {
         throw new Error('Taak niet gevonden');
       }
 
-      // Check for duplicate email on same task
+      // Check for duplicate active registration on same task
       if (taak.aanmeldingen.length > 0) {
         throw new Error('Je bent al aangemeld voor deze taak');
       }
 
-      // Check if task is full (within transaction for accuracy)
+      // Check if task is full (alleen ACTIEVE tellen mee)
       if (taak._count.aanmeldingen >= taak.maxAantal) {
         throw new Error('Deze taak is helaas vol');
       }
@@ -103,6 +109,7 @@ export async function POST(request: NextRequest) {
           opmerking: opmerking || null,
           token,
           bevestigd: true,
+          emailStatus,
         },
       });
 
