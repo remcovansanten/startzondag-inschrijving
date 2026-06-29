@@ -75,6 +75,7 @@ export async function GET() {
       { header: 'Email', key: 'email', width: 30 },
       { header: 'Telefoon', key: 'telefoon', width: 15 },
       { header: 'Opmerking', key: 'opmerking', width: 40 },
+      { header: 'Notitie (admin)', key: 'notitie', width: 30 },
       { header: 'Aangemeld op', key: 'aangemeldOp', width: 20 },
       { header: 'Bevestigd', key: 'bevestigd', width: 10 }
     ];
@@ -88,6 +89,7 @@ export async function GET() {
           email: safeCell(aanmelding.email),
           telefoon: safeCell(aanmelding.telefoon),
           opmerking: safeCell(aanmelding.opmerking),
+          notitie: safeCell(aanmelding.adminNotitie),
           aangemeldOp: formatDateTimeNL(aanmelding.createdAt),
           bevestigd: aanmelding.bevestigd ? 'Ja' : 'Nee'
         });
