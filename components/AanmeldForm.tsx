@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 interface AanmeldFormProps {
   taakId: string;
   taakNaam: string;
+  isVol?: boolean;
 }
 
-export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
+export default function AanmeldForm({ taakId, isVol = false }: AanmeldFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -33,7 +34,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
       const response = await fetch('/api/aanmelden', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taakId, ...formData, website, renderedAt }),
+        body: JSON.stringify({ taakId, ...formData, website, renderedAt, wachtlijst: isVol }),
       });
 
       const data = await response.json();
@@ -41,10 +42,11 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
         throw new Error(data.message || 'Er is een fout opgetreden');
       }
 
-      const target = data.wijzigToken
-        ? `/bevestiging?token=${encodeURIComponent(data.wijzigToken)}`
-        : '/bevestiging';
-      router.push(target);
+      const params = new URLSearchParams();
+      if (data.wijzigToken) params.set('token', data.wijzigToken);
+      if (data.waitlisted) params.set('wachtlijst', '1');
+      const qs = params.toString();
+      router.push(qs ? `/bevestiging?${qs}` : '/bevestiging');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Er is een fout opgetreden');
     } finally {
@@ -159,7 +161,7 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
         disabled={loading}
         className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
       >
-        {loading ? 'Bezig met aanmelden...' : 'Aanmelden'}
+        {loading ? 'Bezig...' : isVol ? 'Op wachtlijst zetten' : 'Aanmelden'}
       </button>
     </form>
   );

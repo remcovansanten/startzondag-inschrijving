@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { sendCancellationEmail } from '@/lib/email';
+import { sendCancellationEmail, sendWaitlistPromotionEmail } from '@/lib/email';
 import { validateRegistration } from '@/lib/validation';
 import { STATUS } from '@/lib/aanmelding';
+import { promoteFromWaitlist } from '@/lib/waitlist';
 
 export async function GET(
   request: NextRequest,
@@ -97,6 +98,23 @@ export async function DELETE(
       naam: aanmelding.naam,
       taakNaam: aanmelding.taak.naam,
     });
+
+    // Kwam er een ACTIEVE plek vrij? Promoveer de eerste van de wachtlijst + mail.
+    if (aanmelding.status === STATUS.ACTIEF) {
+      try {
+        const promoted = await promoteFromWaitlist(aanmelding.taakId);
+        if (promoted) {
+          const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+          await sendWaitlistPromotionEmail(promoted.email, {
+            naam: promoted.naam,
+            taakNaam: promoted.taakNaam,
+            wijzigLink: `${siteUrl}/wijzig/${promoted.token}`,
+          });
+        }
+      } catch {
+        console.error('Wachtlijst-promotie na annulering mislukt');
+      }
+    }
 
     return NextResponse.json({
       success: true,

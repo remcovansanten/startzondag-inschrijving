@@ -159,3 +159,52 @@ export async function sendMagicLinkEmail(to: string, link: string, ttlMinutes: n
     `),
   });
 }
+
+// Bevestiging dat iemand op de wachtlijst staat (taak was vol).
+export async function sendWaitlistEmail(to: string, data: { naam: string; taakNaam: string; wijzigLink: string }) {
+  const naam = escapeHtml(data.naam);
+  const taakNaam = escapeHtml(data.taakNaam);
+  const wijzigLink = escapeHtml(data.wijzigLink);
+  return sendEmailWithRetry({
+    from: FROM,
+    to,
+    subject: `Wachtlijst Startzondag - ${data.taakNaam}`,
+    html: shell(`
+      <h2 style="color: #1f2937; margin-top: 0;">Beste ${naam},</h2>
+      <p style="color: #4b5563; line-height: 1.6;">
+        De taak <strong>${taakNaam}</strong> is op dit moment vol. We hebben je op de
+        <strong>wachtlijst</strong> gezet. Komt er een plek vrij, dan laten we het je weten —
+        je hoeft zelf niets te doen.
+      </p>
+      <p style="color: #4b5563; line-height: 1.6;">
+        Wil je je van de wachtlijst afmelden? Dat kan via deze link:
+      </p>
+      <p style="color: #6b7280; font-size: 12px;">${wijzigLink}</p>
+      ${SIGNATURE}
+    `),
+  });
+}
+
+// Iemand van de wachtlijst is gepromoveerd naar een echte plek.
+export async function sendWaitlistPromotionEmail(to: string, data: { naam: string; taakNaam: string; wijzigLink: string }) {
+  const naam = escapeHtml(data.naam);
+  const taakNaam = escapeHtml(data.taakNaam);
+  const wijzigLink = escapeHtml(data.wijzigLink);
+  return sendEmailWithRetry({
+    from: FROM,
+    to,
+    subject: `Er is een plek vrij - ${data.taakNaam}`,
+    html: shell(`
+      <h2 style="color: #1f2937; margin-top: 0;">Goed nieuws, ${naam}!</h2>
+      <p style="color: #4b5563; line-height: 1.6;">
+        Er is een plek vrijgekomen voor <strong>${taakNaam}</strong> en je stond bovenaan de
+        wachtlijst. Je bent nu <strong>definitief ingedeeld</strong> voor deze taak.
+      </p>
+      <p style="color: #4b5563; line-height: 1.6;">
+        Kun je toch niet? Meld je dan af via deze link, dan kan iemand anders erbij:
+      </p>
+      <p style="color: #6b7280; font-size: 12px;">${wijzigLink}</p>
+      ${SIGNATURE}
+    `),
+  });
+}

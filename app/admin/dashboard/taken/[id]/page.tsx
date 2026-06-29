@@ -2,12 +2,12 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { formatDateTimeNL } from '@/lib/datetime';
-import { ACTIEF_FILTER } from '@/lib/aanmelding';
+import { ACTIEF_FILTER, STATUS } from '@/lib/aanmelding';
 import DeleteButton from './DeleteButton';
 
 export const dynamic = 'force-dynamic';
 
-async function getTaakWithAanmeldingen(id: string) {
+async function getTaakData(id: string) {
   const taak = await prisma.taak.findUnique({
     where: { id },
     include: {
@@ -17,17 +17,22 @@ async function getTaakWithAanmeldingen(id: string) {
       }
     }
   });
-
-  return taak;
+  if (!taak) return null;
+  const wachtlijst = await prisma.aanmelding.findMany({
+    where: { taakId: id, status: STATUS.WACHTLIJST },
+    orderBy: { createdAt: 'asc' },
+  });
+  return { taak, wachtlijst };
 }
 
 export default async function TaakDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const taak = await getTaakWithAanmeldingen(id);
+  const data = await getTaakData(id);
 
-  if (!taak) {
+  if (!data) {
     notFound();
   }
+  const { taak, wachtlijst } = data;
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -137,6 +142,29 @@ export default async function TaakDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
         </div>
+
+        {wachtlijst.length > 0 && (
+          <div className="bg-white rounded-lg shadow mt-6">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-semibold">Wachtlijst ({wachtlijst.length})</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Op volgorde van aanmelding. Komt er een plek vrij, dan wordt de bovenste automatisch
+                ingedeeld en gemaild.
+              </p>
+            </div>
+            <ol className="divide-y divide-gray-200">
+              {wachtlijst.map((w, i) => (
+                <li key={w.id} className="px-6 py-3 flex items-center gap-4 text-sm">
+                  <span className="text-gray-400 w-6">{i + 1}.</span>
+                  <span className="font-medium">{w.naam}</span>
+                  <span className="text-gray-500">{w.email}</span>
+                  <span className="text-gray-500">{w.telefoon}</span>
+                  <span className="ml-auto text-gray-400">{formatDateTimeNL(w.createdAt)}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
       </div>
     </main>
   );

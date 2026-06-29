@@ -50,13 +50,13 @@ export default async function AanmeldPage({ params }: { params: Promise<{ id: st
             </p>
           </div>
 
-          {isVol ? (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              Deze taak is helaas vol. Er kunnen geen nieuwe aanmeldingen meer worden geaccepteerd.
+          {isVol && (
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded mb-4">
+              Deze taak is vol. Je kunt je wel op de <strong>wachtlijst</strong> zetten — komt er een
+              plek vrij, dan laten we het je weten.
             </div>
-          ) : (
-            <AanmeldForm taakId={taak.id} taakNaam={taak.naam} />
           )}
+          <AanmeldForm taakId={taak.id} taakNaam={taak.naam} isVol={isVol} />
         </div>
       </div>
     </main>

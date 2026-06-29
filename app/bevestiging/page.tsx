@@ -3,11 +3,12 @@ import Link from 'next/link';
 export default async function BevestigingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ token?: string; wachtlijst?: string }>;
 }) {
-  const { token } = await searchParams;
+  const { token, wachtlijst } = await searchParams;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
   const wijzigLink = token ? `${siteUrl}/wijzig/${token}` : null;
+  const opWachtlijst = wachtlijst === '1';
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -18,19 +19,23 @@ export default async function BevestigingPage({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Aanmelding geslaagd!</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            {opWachtlijst ? 'Op de wachtlijst!' : 'Aanmelding geslaagd!'}
+          </h1>
         </div>
 
         <p className="text-gray-600 mb-6">
-          Je aanmelding is succesvol verwerkt. Je ontvangt binnen enkele minuten een
-          bevestigingsmail met alle details.
+          {opWachtlijst
+            ? 'Deze taak was vol, dus we hebben je op de wachtlijst gezet. Komt er een plek vrij, dan krijg je vanzelf bericht. Je ontvangt een bevestigingsmail.'
+            : 'Je aanmelding is succesvol verwerkt. Je ontvangt binnen enkele minuten een bevestigingsmail met alle details.'}
         </p>
 
         {wijzigLink && (
           <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6 text-left">
             <p className="text-sm text-gray-700 mb-2">
-              Wil je je aanmelding wijzigen of annuleren? Dat kan via deze link
-              (deze staat ook in je bevestigingsmail):
+              {opWachtlijst
+                ? 'Wil je je van de wachtlijst afmelden? Dat kan via deze link (staat ook in je mail):'
+                : 'Wil je je aanmelding wijzigen of annuleren? Dat kan via deze link (deze staat ook in je bevestigingsmail):'}
             </p>
             <a href={wijzigLink} className="text-primary text-sm break-all hover:underline">
               {wijzigLink}
