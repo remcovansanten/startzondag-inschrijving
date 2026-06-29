@@ -45,6 +45,13 @@ export default async function AanmeldPage({ params }: { params: Promise<{ id: st
             {taak.beschrijving && (
               <p className="text-gray-600 mb-2">{taak.beschrijving}</p>
             )}
+            {(taak.tijd || taak.locatie) && (
+              <p className="text-sm text-gray-600 mb-2">
+                {taak.tijd && <span>🕒 {taak.tijd}</span>}
+                {taak.tijd && taak.locatie && <span> · </span>}
+                {taak.locatie && <span>📍 {taak.locatie}</span>}
+              </p>
+            )}
             <p className="text-sm text-gray-500">
               {taak._count.aanmeldingen} van {taak.maxAantal} plekken bezet
             </p>
