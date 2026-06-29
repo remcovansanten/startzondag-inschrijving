@@ -13,13 +13,26 @@ export async function POST(request: NextRequest) {
                 'unknown';
     
     const body = await request.json();
-    const { taakId } = body;
+    const { taakId, website, renderedAt } = body;
 
     if (!taakId || typeof taakId !== 'string') {
       return NextResponse.json(
         { message: 'Taak is verplicht' },
         { status: 400 }
       );
+    }
+
+    // Onzichtbare anti-abuse: een honeypot-veld dat echte gebruikers nooit zien/
+    // invullen, en een minimale invultijd. Een bot vult de honeypot of submit
+    // direct. Bewuste, gedocumenteerde keuze: doe alsof het lukte en sla niets op
+    // (verklap de bot niets) — geen stille fallback elders in de app.
+    const elapsedMs = Date.now() - Number(renderedAt);
+    const looksLikeBot =
+      (typeof website === 'string' && website.trim() !== '') ||
+      !Number.isFinite(elapsedMs) ||
+      elapsedMs < 3000;
+    if (looksLikeBot) {
+      return NextResponse.json({ success: true, message: 'Aanmelding succesvol' });
     }
 
     // Gedeelde validatie + sanitisatie (naam, e-mail, telefoon, opmerking + lengtes)
@@ -116,6 +129,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Aanmelding succesvol',
+      wijzigToken: token, // voor de bevestigingspagina (zelfde token als in de mail)
     });
   } catch (error: any) {
     console.error('Registration error:', error?.message);

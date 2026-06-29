@@ -12,12 +12,16 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+  // Tijdstip waarop het formulier verscheen (voor de anti-bot tijd-check).
+  const [renderedAt] = useState(() => Date.now());
+  // Honeypot: blijft leeg bij echte gebruikers; bots vullen 'm.
+  const [website, setWebsite] = useState('');
+
   const [formData, setFormData] = useState({
     naam: '',
     email: '',
     telefoon: '',
-    opmerking: ''
+    opmerking: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,38 +32,46 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
     try {
       const response = await fetch('/api/aanmelden', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          taakId,
-          ...formData
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taakId, ...formData, website, renderedAt }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || 'Er is een fout opgetreden');
       }
 
-      router.push('/bevestiging');
-    } catch (err: any) {
-      setError(err.message || 'Er is een fout opgetreden');
+      const target = data.wijzigToken
+        ? `/bevestiging?token=${encodeURIComponent(data.wijzigToken)}`
+        : '/bevestiging';
+      router.push(target);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Er is een fout opgetreden');
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Honeypot — verborgen voor mensen, zichtbaar voor bots. Niet aankomen. */}
+      <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
+        <label htmlFor="website">Vul dit veld niet in</label>
+        <input
+          type="text"
+          id="website"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       <div>
         <label htmlFor="naam" className="block text-sm font-medium text-text-dark mb-1">
           Naam *
@@ -120,6 +132,20 @@ export default function AanmeldForm({ taakId, taakNaam }: AanmeldFormProps) {
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
         />
+      </div>
+
+      <div className="flex items-start gap-2">
+        <input
+          type="checkbox"
+          id="akkoord"
+          name="akkoord"
+          required
+          className="mt-1 h-4 w-4"
+        />
+        <label htmlFor="akkoord" className="text-sm text-gray-600">
+          Ik ga ermee akkoord dat mijn naam, e-mail en telefoonnummer worden gebruikt voor de
+          organisatie van de Startzondag. Deze gegevens worden na afloop verwijderd.
+        </label>
       </div>
 
       {error && (

@@ -20,7 +20,8 @@ export interface RegistrationResult {
 // Gedeelde validatie + sanitisatie voor aanmelden én wijzigen.
 export function validateRegistration(input: RegistrationInput): RegistrationResult {
   const naam = typeof input.naam === 'string' ? input.naam.trim() : '';
-  const email = typeof input.email === 'string' ? input.email.trim() : '';
+  // E-mail genormaliseerd (lowercase) voor consistente opslag + dubbel-detectie.
+  const email = typeof input.email === 'string' ? input.email.trim().toLowerCase() : '';
   const telefoon = typeof input.telefoon === 'string' ? input.telefoon.trim() : '';
   const opmerking = typeof input.opmerking === 'string' ? input.opmerking.trim() : '';
 

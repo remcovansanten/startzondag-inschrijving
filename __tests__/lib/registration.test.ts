@@ -9,6 +9,10 @@ describe('validateRegistration', () => {
     expect(r.data).toEqual({ naam: 'Jan', email: 'jan@example.nl', telefoon: '06-12345678', opmerking: 'hoi' });
   });
 
+  it('normaliseert e-mail naar lowercase (dubbel-detectie)', () => {
+    expect(validateRegistration({ ...valid, email: '  Jan@Example.NL ' }).data?.email).toBe('jan@example.nl');
+  });
+
   it('lege opmerking wordt null', () => {
     expect(validateRegistration({ ...valid, opmerking: '' }).data?.opmerking).toBeNull();
   });
