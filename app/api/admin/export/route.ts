@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { formatDateTimeNL } from '@/lib/datetime';
 import { requireAdmin } from '@/lib/api-auth';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 import ExcelJS from 'exceljs';
 
 // Neutraliseer CSV/Excel formula-injection: cellen die met =,+,-,@,tab of CR
@@ -19,6 +20,7 @@ export async function GET() {
     const taken = await prisma.taak.findMany({
       include: {
         aanmeldingen: {
+          where: ACTIEF_FILTER,
           orderBy: { createdAt: 'asc' }
         }
       },

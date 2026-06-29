@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { formatDateTimeNL } from '@/lib/datetime';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 import DeleteButton from './DeleteButton';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,7 @@ async function getTaakWithAanmeldingen(id: string) {
     where: { id },
     include: {
       aanmeldingen: {
+        where: ACTIEF_FILTER,
         orderBy: { createdAt: 'desc' }
       }
     }

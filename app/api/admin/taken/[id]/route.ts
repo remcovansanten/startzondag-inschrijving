@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireAdmin } from '@/lib/api-auth';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 
 // GET a single task
 export async function GET(
@@ -16,7 +17,7 @@ export async function GET(
       where: { id },
       include: {
         _count: {
-          select: { aanmeldingen: true }
+          select: { aanmeldingen: { where: ACTIEF_FILTER } }
         }
       }
     });
@@ -62,7 +63,7 @@ export async function PUT(
       where: { id },
       include: {
         _count: {
-          select: { aanmeldingen: true }
+          select: { aanmeldingen: { where: ACTIEF_FILTER } }
         }
       }
     });
@@ -120,7 +121,7 @@ export async function DELETE(
       where: { id },
       include: {
         _count: {
-          select: { aanmeldingen: true }
+          select: { aanmeldingen: { where: ACTIEF_FILTER } }
         }
       }
     });

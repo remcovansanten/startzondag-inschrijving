@@ -2,13 +2,14 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AanmeldForm from '@/components/AanmeldForm';
 import { prisma } from '@/lib/db';
+import { ACTIEF_FILTER } from '@/lib/aanmelding';
 
 async function getTaak(id: string) {
   const taak = await prisma.taak.findUnique({
     where: { id },
     include: {
       _count: {
-        select: { aanmeldingen: true }
+        select: { aanmeldingen: { where: ACTIEF_FILTER } }
       }
     }
   });

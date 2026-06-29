@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireAdmin } from '@/lib/api-auth';
+import { STATUS } from '@/lib/aanmelding';
 
 // DELETE a registration
 export async function DELETE(
@@ -24,9 +25,10 @@ export async function DELETE(
       );
     }
 
-    // Delete the registration
-    await prisma.aanmelding.delete({
-      where: { id }
+    // Soft-delete: markeer als geannuleerd (rij blijft bewaard voor rapportage).
+    await prisma.aanmelding.update({
+      where: { id },
+      data: { status: STATUS.GEANNULEERD },
     });
 
     return NextResponse.json({
